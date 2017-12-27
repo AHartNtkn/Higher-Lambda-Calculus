@@ -16,7 +16,7 @@ module Nat where
 ```
 
 After that, a declaration of the form `<NAME> : <TYPE> = <TERM>`
-can be declared;
+can be made;
 ```
 nat : * = (A : *) (s : (a : A) . A) (z : A) . A
 
@@ -34,13 +34,13 @@ znat : nat nat = zero nat
 ```
 
 since nat is declared to not be a function, and so doesn't accept arguments.
-One can do the following;
+One can do the following, though;
 
 ```
 natfun : (A : *) (s : (a : A) . A) (z : A) . *
   = (A : *) (s : (a : A) . A) (z : A) . A
 
-znat : natfun nat = zero nat
+znatfun : natfun = zero
 ```
 
 ## Higher Types
@@ -64,14 +64,13 @@ unit : * = (X : *) (x : X) . X
 tt : unit2 = (X : *) (x : X) . x
 ```
 
-`tt` doesn't have any witnesses, it's essentially the empty type
+`tt` doesn't have any witnesses, compare with the empty type
 
 ```
 empty : * = (X : *) . X
-
 ```
 
-but inside another type system. Similarly, true and false in the
+Similarly, true and false in the
 ordinary booleans are also empty. These terms do have identity functions,
 though
 
@@ -80,7 +79,7 @@ idtt : (tt' : tt) . tt = (tt' : tt) . tt'
 ```
 
 and composition commutativity and identity cancellation of these functions, of course, 
-holds on the nose as it would be for any lambda expression.
+holds on the nose as they would any lambda expression.
 
 We can define types with synthetic functions, for example;
 
