@@ -1,0 +1,10 @@
+module Nat where
+
+nat : * = (A : *) (s : (a : A) . A) (z : A) . A
+
+zero : nat = (A : *) (s : (a : A) . A) (z : A) . z
+
+natfun : (A : *) (s : (a : A) . A) (z : A) . *
+  = (A : *) (s : (a : A) . A) (z : A) . A
+
+znat : natfun nat = zero nat

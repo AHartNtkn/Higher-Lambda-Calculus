@@ -1,0 +1,11 @@
+module Bool where
+
+bool : * = (X : *) (x : X) (y : X) . X
+true : bool = (X : *) (x : X) (y : X) . x
+false : bool = (X : *) (x : X) (y : X) . y
+
+trueid : (n : true) . true = (n : true) . n
+
+not : (b : bool) . bool = (b : bool) (X : *) (x : X) (y : X) . b X y x
+notnotcanc : (b : bool) (n : not (not b)) . b = (b : bool) (n : not (not b)) . n
+

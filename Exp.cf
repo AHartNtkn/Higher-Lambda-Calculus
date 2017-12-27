@@ -1,0 +1,35 @@
+entrypoints Module, Exp ;
+
+comment "--" ;
+comment "{-" "-}" ;
+
+layout "where", "let" ;
+layout stop "in" ;
+-- Do not use layout toplevel as it makes pExp fail!
+
+Module.   Module ::= "module" AIdent "where" "{" [Imp] [Decl] "}" ;
+
+Import.   Imp ::= "import" AIdent ;
+separator Imp ";" ;
+
+DeclDef.    Decl ::= AIdent ":" Exp "=" ExpWhere ;
+separator   Decl ";" ;
+
+Where.    ExpWhere ::= Exp "where" "{" [Decl] "}" ;
+NoWhere.  ExpWhere ::= Exp ;
+
+SLet.          Exp  ::= "let" "{" [Decl] "}" "in" Exp ;
+SLam.          Exp1 ::= [PTele] "." Exp ;
+SApp.          Exp2 ::= Exp2 Exp3 ;
+SVar.          Exp3 ::= AIdent ;
+SU.            Exp3 ::= "*" ;
+SHole.         Exp3 ::= HoleIdent ;
+coercions Exp 3 ;
+
+PTele.    PTele ::= "(" Exp ":" Exp ")" ;
+terminator nonempty PTele "" ;
+
+token AIdent ('_')|(letter)(letter|digit|'\''|'_')*|('!')(digit)* ;
+separator AIdent "" ;
+
+token HoleIdent '?' ;
