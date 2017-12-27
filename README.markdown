@@ -1,5 +1,4 @@
-Higher Lambda Calculus
-======================
+# Higher Lambda Calculus
 
 This is a simple prototype implementation of a lambda calculus
 in which all types are data (as is typical for dependent types),
@@ -8,8 +7,7 @@ and all data are types. This means that we may have terms
 setting in which all types are their own mini-languages, with synthetic
 and functional inhabitants.
 
-Basics
--------
+## Basics
 
 All files begin with a module declaration;
 
@@ -45,8 +43,7 @@ natfun : (A : *) (s : (a : A) . A) (z : A) . *
 znat : natfun nat = zero nat
 ```
 
-Higher Types
-------------
+## Higher Types
 
 We can encode types with terms that witness other terms. For example;
 
@@ -95,25 +92,22 @@ If : (i0 : I0) . I1
    = (i0 : I0) (X : *) (x : X) (y : X) (f : (x' : x) . y) . f (i0 X x y f)
 ```
 
-Type Checking Rules
--------------------
+## Type Checking Rules
 
 ![Typing Rules for HLC](/Media/Typing Rules.png)
 
-Install
--------
+## Install
 
 * Navigate to directory and run `cabal install`
 * The `higerlc.exe` will appear in `.\dist\build\higerlc\`
 * Load a program with `higerlc.exe Nat.hlc`
 
-References
---------------------
+## References
+
 None: I don't know of anything similar to this, but I'd be surprised if no one
 thought to do something like this in the past. If you know of anything, especially
 as it relates to the consistency of this kind of system, feel free to let me know.
 
-Authors
--------
+## Author
 
 Anthony Hart
