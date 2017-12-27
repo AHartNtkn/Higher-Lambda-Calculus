@@ -53,7 +53,6 @@ unit2 : * = (X : *) (x : X) (x' : x) . X
 tt2 : unit2 = (X : *) (x : X) (x' : x) . x
 
 tt' : tt = (X : *) (x : X) (x' : x) . x'
-
 ```
 
 For the ordinary unit type;

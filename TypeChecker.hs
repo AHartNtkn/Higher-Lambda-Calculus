@@ -55,7 +55,7 @@ check tr ty =
              if tnf == tynf
              then return ()
              else proofError $ "Type didn't match during lookup.  Expected something of type "
-                                ++ pshow ty ++ "; saw " ++ pshow (Name i) ++ " of type " ++ pshow t ++ " instead."
+                                ++ pshow tynf ++ "; saw " ++ pshow (Name i) ++ " of type " ++ pshow tnf ++ " instead."
     Var st n -> do
       ctx <- ask
       case (ctx , n) of
@@ -68,7 +68,7 @@ check tr ty =
             tyty <- infer ty
             local tail $ check x (unquote tyty)
           else proofError $ "Term does not have correct type. Expected something of type "
-                             ++ pshow ty ++ "; saw " ++ pshow (Var st n) ++ " of type " ++ pshow x ++ " instead."
+                             ++ pshow tynf ++ "; saw " ++ pshow (Var st n) ++ " of type " ++ pshow xnf ++ " instead."
         (_:g, _) -> local tail $ check (Var st (n - 1)) (unquote ty)
     Lam _ aty tr' -> do
       tyw <- nwhnf ty
@@ -79,14 +79,14 @@ check tr ty =
           if ty1nf == atynf
           then local (ty1:) $ check tr' ty2
           else proofError $ "Type of lam annotation didn't match type annotation. Expected "
-                             ++ pshow ty1 ++ "; saw " ++ pshow aty ++ " instead."
+                             ++ pshow ty1nf ++ "; saw " ++ pshow atynf ++ " instead."
         U -> do
           infer aty -- This goes unused. aty just needs an inferable type.
           local (aty:) $ check tr' U
         Kind -> do
           infer aty -- This goes unused. aty just needs an inferable type.
           local (aty:) $ check tr' Kind
-        _ -> proofError $ "Lambdas can only be Lam or * types."
+        _ -> proofError $ "Lambdas can only be Lam or * types, not " ++ pshow tyw ++ "."
     tr1 :% tr2 -> do
       ity <- infer (tr1 :% tr2)
       tynf <- nf ty
@@ -94,8 +94,8 @@ check tr ty =
       if tynf == itynf
       then infer ty >> return () -- Note, this isn't used, ty just needs some type.
       else proofError $ "Failed to unify at application. Expected something of type "
-                         ++ pshow ty ++ "; instead saw " ++ pshow (tr1 :% tr2) ++ " of type " ++
-                         pshow ity ++ "."
+                         ++ pshow tynf ++ "; instead saw " ++ pshow (tr1 :% tr2) ++ " of type " ++
+                         pshow itynf ++ "."
     U -> do -- What to do to implement proper kinds?
       tyw <- nwhnf ty
       case tyw of
