@@ -80,7 +80,7 @@ moduleToCtx (Module a (Import (AIdent s):im) decl) = do
 
 -- Repl Loop
 mainLoop :: String -> Proof ()
-mainLoop s = do
+mainLoop s = (do
   liftIO $ putStr "> "
   input <- liftIO getLine -- Print prompt and get user input
   case input of -- REPL commands
@@ -99,15 +99,25 @@ mainLoop s = do
                  ":t <Expression> - Check the type of an expression\n")
            mainLoop s -- help command
     ':':'t':' ':l -> do
-       errPr (pExp . resolveLayout True . myLexer $ l) >>= convert >>= infer >>= liftIO . putStrLn . pshow
+       catchError
+         (errPr (pExp . resolveLayout True . myLexer $ l) >>= convert >>= infer >>= liftIO . putStrLn . pshow)
+         (\_ -> return ())
        mainLoop s
     ':':'a':' ':l -> do
-       errPr ((pExp . resolveLayout True . myLexer) l) >>= convert >>= liftIO . putStrLn . show
+       catchError
+         (errPr ((pExp . resolveLayout True . myLexer) l) >>= convert >>= liftIO . putStrLn . show)
+         (\_ -> return ())
        mainLoop s
     ":r"   -> fileToCtx s >> mainLoop s
     _  -> do
-       errPr ((pExp . resolveLayout True . myLexer) input) >>= convert >>= nf >>= liftIO . putStrLn . printA 0
+       catchError
+         (errPr ((pExp . resolveLayout True . myLexer) input) >>= convert >>= nf >>= liftIO . putStrLn . printA 0)
+         (\_ -> return ())
        mainLoop s
+    ) `catchError` (\_ -> do
+      liftIO $ putStrLn "Restarting with empty context. Enter \":r\" to reload from file."
+      mainLoop s
+      )
 
 -- Main program
 main :: IO String
