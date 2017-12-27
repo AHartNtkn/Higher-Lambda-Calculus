@@ -31,15 +31,15 @@ goalTerm = Lam "i0" (Name "I0") (Lam "A" U (Lam "a" (Var "A" 0) (Lam "y" (Var "A
 goalType = Lam "i0" (Name "I0") (Lam "X" U (Lam "x" (Var "X" 0) (Lam "y" (Var "X" 1) (Lam "f" (Lam "x'" (Var "x" 1) (Var "y" 1)) (Var "x" 2)))))
 -}
 
--- goalTerm = Lam "B" U (Lam "b" (Var "B" 0) (Lam "b'" (Var "b" 0) (Var "b'" 0)))
--- goalType = Lam "C" U (Lam "c" (Var "C" 0) (Lam "c'" (Var "c" 0) (Var "c" 1)))
+-- goalType = Lam "A" U (Lam "B" (Lam "a" (Var "A" 0) U) (Lam "F" (Lam "a" (Var "A" 1) (Var "B" 1 :% Var "a" 0)) (Lam "a" (Var "A" 2) (Var "B" 2 :% Var "a" 0))))
+-- goalTerm = Lam "A" U (Lam "B" (Lam "a" (Var "A" 0) U) (Lam "F" (Lam "a" (Var "A" 1) (Var "B" 1 :% Var "a" 0)) (Lam "a" (Var "A" 2) (Var "F" 1 :% Var "a" 0))))
 
-goalTerm = Var "b'" 0
-goalType = Var "c" 1
+goalType = Lam "a" (Var "A" 2) (Var "B" 2 :% Var "a" 0)
+goalTerm = Lam "a" (Var "A" 2) (Var "F" 1 :% Var "a" 0)
 
 testPr :: Proof ()
 testPr = do
-  local ([Var "c'" 0, Var "c" 0,Var "C" 0,U] ++) (do
+  local ([(Lam "a" (Var "A" 1) (Var "B" 1 :% Var "a" 0)),(Lam "a" (Var "A" 0) U),U] ++) (do
     check goalTerm goalType)
 
 --  check goalTerm goalType

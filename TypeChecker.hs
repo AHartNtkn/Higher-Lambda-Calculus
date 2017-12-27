@@ -30,15 +30,16 @@ infer t = do
     tr1 :% tr2 -> do
       ty1 <- nwhnf =<< infer tr1
       case ty1 of
-        Lam _ tp1 tp2 -> do
+        Pi _ tp1 tp2 -> do
           check tr2 tp1
-          return (ty1 :% tr2)
-        _ -> proofError $ "Application cannot be performed on non-function."
+          return (sub 0 tr2 ty1)
+        _ -> proofError $ "Application cannot be performed on non-function " ++ pshow tr1 ++ " of type " ++ pshow ty1 ++ "."
+    Pi s ty1 ty2 -> undefined
     Lam s ty1 ty2 -> do
       infer ty1 -- This goes unused. ty1 just needs an inferable type.
       local (ty1:) $ do
         ty2' <- infer ty2
-        return $ Lam s ty1 ty2'
+        return $ Pi s ty1 ty2'
     U -> return Kind
     Kind -> proofError $ "Kinds cannot be typed."
 
@@ -70,16 +71,9 @@ check tr ty =
           else proofError $ "Term does not have correct type. Expected something of type "
                              ++ pshow tynf ++ "; saw " ++ pshow (Var st n) ++ " of type " ++ pshow xnf ++ " instead."
         (_:g, _) -> local tail $ check (Var st (n - 1)) (unquote ty)
-    Lam _ aty tr' -> do
+    Pi s ty1 ty2 -> do
       tyw <- nwhnf ty
       case tyw of
-        Lam _ ty1 ty2 -> do
-          ty1nf <- nf ty1
-          atynf <- nf aty
-          if ty1nf == atynf
-          then local (ty1:) $ check tr' ty2
-          else proofError $ "Type of lam annotation didn't match type annotation. Expected "
-                             ++ pshow ty1nf ++ "; saw " ++ pshow atynf ++ " instead."
         U -> do
           infer aty -- This goes unused. aty just needs an inferable type.
           local (aty:) $ check tr' U
@@ -87,6 +81,17 @@ check tr ty =
           infer aty -- This goes unused. aty just needs an inferable type.
           local (aty:) $ check tr' Kind
         _ -> proofError $ "Lambdas can only be Lam or * types, not " ++ pshow tyw ++ "."
+    Lam _ aty tr' -> do
+      tyw <- nwhnf ty
+      case tyw of
+        Pi _ ty1 ty2 -> do
+          ty1nf <- nf ty1
+          atynf <- nf aty
+          if ty1nf == atynf
+          then local (ty1:) $ check tr' ty2
+          else proofError $ "Type of lam annotation didn't match type annotation. Expected "
+                             ++ pshow ty1nf ++ "; saw " ++ pshow atynf ++ " instead."
+        _ -> proofError $ "Lambdas can only be Pi types, not " ++ pshow tyw ++ "."
     tr1 :% tr2 -> do
       ity <- infer (tr1 :% tr2)
       tynf <- nf ty

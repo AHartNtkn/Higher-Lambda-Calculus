@@ -1,5 +1,5 @@
 name:                higerlc
-version:             1.0
+version:             2.0
 synopsis:            A prototype for a kind of higher-dimensional lambda calculus.
 description:         A prototype for a kind of higher-dimensional lambda calculus.
 author:              Anthony Hart
