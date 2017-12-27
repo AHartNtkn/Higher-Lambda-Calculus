@@ -94,7 +94,7 @@ If : (i0 : I0) . I1
 
 ## Type Checking Rules
 
-![Typing Rules for HLC](/Media/Typing Rules.png)
+![Typing](/.README.imgs/typing.png)
 
 ## Install
 
