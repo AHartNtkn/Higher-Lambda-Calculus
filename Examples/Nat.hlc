@@ -7,4 +7,9 @@ zero : nat = (A : *) (s : (a : A) . A) (z : A) . z
 natfun : (A : *) (s : (a : A) . A) (z : A) . *
   = (A : *) (s : (a : A) . A) (z : A) . A
 
+nconv : (n : nat) . natfun
+  = (n : nat) . n
+
 znat : natfun nat = zero nat
+
+znat2 : natfun = zero

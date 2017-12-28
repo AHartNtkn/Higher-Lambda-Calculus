@@ -1,0 +1,32 @@
+module Universe where
+
+import Unit
+
+type : * = (X : *) (f : (T : *) . X) . X
+wr : (A : *) . type
+   = (A : *) (X : *) (f : (T : *) . X) . f A
+
+--uwr : (t : type) . *
+--  = (t : type) . t * ((A : *) . A)
+
+tUnit : type = wr unit
+
+-- fun : (A : *) (B : *) (F : (a : A) . B) (tr : wr A) . wr B
+--  = (A : *) (B : *) (F : (a : A) . B) (tr : wr A) (X : *) (f : (T : *) . X) . f B
+
+-- tr : (X : *) (f : (Z : *) . X) . f A
+-- tr unit ((Z : *) . tt) 
+
+
+{-
+type : U1 = (X : U1) (f : (T : U0) . X) . X
+wr : (A : U0) . type
+   = (A : U0) (X : U1) (f : (T : U0) . X) . f A
+uwr : (t : type) . U0
+   = (t : type) . t U0 ((A : U0) . A)
+
+-}
+
+
+
+

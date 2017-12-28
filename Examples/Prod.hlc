@@ -1,0 +1,45 @@
+module Prod where
+
+uni : (A : *) . * = (A : *) (X : *) (f : (a : A) . X) . X
+wr : (A : *) (a : A) . uni A
+  = (A : *) (a : A) (X : *) (f : (a : A) . X) . f a
+uw : (A : *) (u : uni A) . A
+  = (A : *) (u : uni A) . u A ((a : A) . a)
+
+prod : (A : *) (B : *) . * = (A : *) (B : *) (X : *) (f : (a : A) (b : B) . X) . X
+proj1 : (A : *) (B : *) (p : prod A B) . A
+  = (A : *) (B : *) (p : prod A B) . p A ((a : A) (b : B) . a)
+proj2 : (A : *) (B : *) (p : prod A B) . B
+  = (A : *) (B : *) (p : prod A B) . p B ((a : A) (b : B) . b)
+pair : (A : *) (B : *) (a : A) (b : B) . prod A B
+ = (A : *) (B : *) (a : A) (b : B) (X : *) (f : (a : A) (b : B) . X) . f a b
+
+-- Doesn't type check, as it shouldn't.
+-- p' : (A : *) . * = (A : *) . prod A
+
+inProd : (A : *) (a : A) (b : A) . *
+  = (A : *) (a : A) (b : A) (X : *) (f : (a' : a) (b' : b) . X) . X
+inPair : (A : *) (a : A) (b : A) (a' : a) (b' : b) . inProd A a b
+  = (A : *) (a : A) (b : A) (a' : a) (b' : b) (X : *) (f : (a' : a) (b' : b) . X) . f a' b'
+-- How to work further with this type? Perhaps A needs to be a Cartesian category?
+
+inUni : (A : *) (a : A) . *
+  = (A : *) (a : A) (X : *) (f : (a' : a) . X) . X
+iwr : (A : *) (a : A) (a' : a) . inUni A a
+    = (A : *) (a : A) (a' : a) (X : *) (f : (a' : a) . X) . f a'
+
+-- uw : (A : *) (u : uni A) . A
+--   = (A : *) (u : uni A) . u A ((a : A) . a)
+
+
+
+
+-- natural : (A : *) (B : *) (f : (a : A) . B) (g : (a : A) . B) (a : (f' : f) . g) (a : A) (fa : f a) . B
+--  = (A : *) (B : *) (f : (a : A) . B) (g : (a : A) . B) (a : (f' : f) . g) (a : A) (fa : f a) . g a
+
+-- hotep : (A : *) (B : *) (f : (a : A) . B) (g : (a : A) . B) (a : (f' : f) . g) (fa : f a) . g a
+--  = 
+
+
+
+

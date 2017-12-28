@@ -1,0 +1,30 @@
+module Int where
+
+import Functions
+
+-- A type with two terms and a synthetic function between them.
+int : * = (X : *) (a : X) (b : X) (f : (a' : a) . b) . X
+I0 : int = (X : *) (a : X) (b : X) (f : (a' : a) . b) . a
+I1 : int = (X : *) (a : X) (b : X) (f : (a' : a) . b) . b
+IF : (i0 : I0) . I1 = (i0 : I0) (X : *) (a : X) (b : X) (f : (a' : a) . b) . f (i0 X a b f)
+
+-- A type with three terms and synthetic functions between them.
+jnt : * = (X : *) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . X
+J0 : jnt = (X : *) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . a
+J1 : jnt = (X : *) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . b
+JF : (j0 : J0) . J1 = (j0 : J0) (X : *) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . f (j0 X a b f c g)
+J2 : jnt = (X : *) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . c
+JG : (j1 : J1) . J2 = (j1 : J1) (X : *) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . g (j1 X a b f c g)
+JFG : (j0 : J0) . J2 = comp1 jnt J0 J1 JF J2 JG
+
+-- Map IF onto JF
+ijf1 : (i : int) . jnt
+  = (i : int) . i jnt J0 J1 JF
+
+-- Map IF onto JG
+ijf2 : (i : int) . jnt
+  = (i : int) . i jnt J1 J2 JG
+
+-- Map IF onto JG o JF
+ijf3 : (i : int) . jnt
+  = (i : int) . i jnt J0 J2 JFG

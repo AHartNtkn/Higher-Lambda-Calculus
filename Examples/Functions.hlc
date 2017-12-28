@@ -1,0 +1,35 @@
+module Functions where
+
+-- Function application
+app : (A : *) (B : *) (F : (a : A) . B) (a : A) . B
+    = (A : *) (B : *) (F : (a : A) . B) (a : A) . F a
+
+-- Dependent function composition
+appD : (A : *) (B : (a : A) . *) (F : (a : A) . B a) (a : A) . B a
+     = (A : *) (B : (a : A) . *) (F : (a : A) . B a) . F
+
+-- Ordinary function composition
+comp : (A : *) (B : *) (F : (a : A) . B) (C : *) (G : (b : B) . C) (a : A) . C
+   = (A : *) (B : *) (F : (a : A) . B) (C : *) (G : (b : B) . C) (a : A) . G (F a)
+
+-- Dependent function composition
+compD :
+   (A : *) (B : (a : A) . *) (F : (a : A) . B a)
+   (C : (a : A) (b : B a) . *) (G : (a : A) (b : B a) . C a b)
+   (a : A) . C a (F a)
+  = (A : *) (B : (a : A) . *) (F : (a : A) . B a) (C : (a : A) (b : B a) . *) (G : (a : A) (b : B a) . C a b) (a : A) . G a (F a)
+
+
+-- Composition one level down
+comp1 : (A : *) (a : A) (b : A) (f : (a' : a) . b) (c : A) (g : (b' : b) . c) (a' : a) . c
+   = (A : *) (a : A) (b : A) (f : (a' : a) . b) (c : A) (g : (b' : b) . c) (a' : a) . g (f a')
+
+-- Vertical function composition.
+vcomp : (A : *) (B : *) (f : (a : A) . B) (g : (a : A) . B)
+        (a : (f' : f) . g) (h : (b : A) . B) (b : (g' : g) . h)
+        (f' : f) . h
+      = (A : *) (B : *) (f : (a : A) . B) (g : (a : A) . B)
+        (a : (f' : f) . g) (h : (a : A) . B) (b : (g' : g) . h)
+        (f' : f) . b (a f')
+
+ 
