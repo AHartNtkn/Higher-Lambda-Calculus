@@ -18,14 +18,14 @@ module Nat where
 After that, a declaration of the form `<NAME> : <TYPE> = <TERM>`
 can be made;
 ```
-nat : * = (A : *) (s : (a : A) . A) (z : A) . A
+nat : U[0] = (A : U[0]) (s : (a : A) . A) (z : A) . A
 
-zero : nat = (A : *) (s : (a : A) . A) (z : A) . z
+zero : nat = (A : U[0]) (s : (a : A) . A) (z : A) . z
 ```
 
 Note that pi-types and lambda expressions are fused. This means that
-`(A : *) (s : (a : A) . A) (z : A) . A` could be the natural numbers,
-a type, or it could be a function of type `(A : *) (s : (a : A) . A) (z : A) . *`.
+`(A : U[0]) (s : (a : A) . A) (z : A) . A` could be the natural numbers,
+a type, or it could be a function of type `(A : U[0]) (s : (a : A) . A) (z : A) . U[0]`.
 However, there's less freedom in this than one might expect. The following won't
 type check;
 
@@ -37,8 +37,8 @@ since nat is declared to not be a function, and so doesn't accept arguments.
 One can do the following, though;
 
 ```
-natfun : (A : *) (s : (a : A) . A) (z : A) . *
-  = (A : *) (s : (a : A) . A) (z : A) . A
+natfun : (A : U[0]) (s : (a : A) . A) (z : A) . U[0]
+  = (A : U[0]) (s : (a : A) . A) (z : A) . A
 
 znatfun : natfun = zero
 ```
@@ -48,25 +48,25 @@ znatfun : natfun = zero
 We can encode types with terms that witness other terms. For example;
 
 ```
-unit2 : * = (X : *) (x : X) (x' : x) . X
+unit2 : U[0] = (X : U[0]) (x : X) (x' : x) . X
 
-tt2 : unit2 = (X : *) (x : X) (x' : x) . x
+tt2 : unit2 = (X : U[0]) (x : X) (x' : x) . x
 
-tt' : tt = (X : *) (x : X) (x' : x) . x'
+tt' : tt = (X : U[0]) (x : X) (x' : x) . x'
 ```
 
 For the ordinary unit type;
 
 ```
-unit : * = (X : *) (x : X) . X
+unit : U[0] = (X : U[0]) (x : X) . X
 
-tt : unit2 = (X : *) (x : X) . x
+tt : unit2 = (X : U[0]) (x : X) . x
 ```
 
 `tt` doesn't have any witnesses, compare with the empty type
 
 ```
-empty : * = (X : *) . X
+empty : U[0] = (X : U[0]) . X
 ```
 
 Similarly, true and false in the
@@ -83,11 +83,11 @@ holds on the nose as they would any lambda expression.
 We can define types with synthetic functions, for example;
 
 ```
-int : * = (X : *) (x : X) (y : X) (f : (x' : x) . y) . X
-I0 : int = (A : *) (a : A) (b : A) (g : (a' : a) . b) . a
-I1 : int = (X : *) (x : X) (y : X) (f : (x' : x) . y) . y
+int : U[0] = (X : U[0]) (x : X) (y : X) (f : (x' : x) . y) . X
+I0 : int = (A : U[0]) (a : A) (b : A) (g : (a' : a) . b) . a
+I1 : int = (X : U[0]) (x : X) (y : X) (f : (x' : x) . y) . y
 If : (i0 : I0) . I1
-   = (i0 : I0) (X : *) (x : X) (y : X) (f : (x' : x) . y) . f (i0 X x y f)
+   = (i0 : I0) (X : U[0]) (x : X) (y : X) (f : (x' : x) . y) . f (i0 X x y f)
 ```
 
 ## Type Checking Rules
@@ -96,9 +96,9 @@ If : (i0 : I0) . I1
 
 ## Install
 
-* Navigate to directory and run `cabal install`
-* The `higerlc.exe` will appear in `.\dist\build\higerlc\`
-* Load a program with `higerlc.exe Nat.hlc`
+U[0] Navigate to directory and run `cabal install`
+U[0] The `higerlc.exe` will appear in `.\dist\build\higerlc\`
+U[0] Load a program with `higerlc.exe Nat.hlc`
 
 ## References
 
