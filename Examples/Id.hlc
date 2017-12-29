@@ -1,0 +1,67 @@
+module Id where
+
+import Unit
+
+id : (A : U[0]) (a : A) (b : A) . U[0]
+  = (A : U[0]) (a : A) (b : A) (P : (a : A) . U[0]) (pa : P a) . P b
+
+refl : (A : U[0]) (a : A) . id A a a
+     = (A : U[0]) (a : A) (P : (a : A) . U[0]) (pa : P a) . pa
+
+subId : (A : U[0]) (a : A) (a' : a) (b' : a) . U[0]
+  = (A : U[0]) (a : A) (a' : a) (b' : a) (P : (a' : a) . U[0]) (pa : P a') . P b'
+
+subRefl : (A : U[0]) (a : A) (a' : a) . subId A a a' a'
+        = (A : U[0]) (a : A) (a' : a) (P : (a' : a) . U[0]) (pa : P a') . pa
+
+interval : U[0]
+  = (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . X
+
+left : interval
+  = (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . a
+
+right : interval
+  = (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . b
+
+left2Right : (l : left) . right
+  = (l : left) (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . X) a b (l X a b f)
+
+right2Left : (l : right) . left
+  = (r : right) (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . X) b a (r X a b f)
+
+left2Left : (l : left) . left
+  = (l : left) (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . X) a a (l X a b f)
+
+right2Right : (r : right) . right
+  = (r : right) (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . X) b b (r X a b f)
+
+{-
+converge : (l : right) . left
+  = (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . unit2) tt2 tt2 tt'
+-}
+
+-- (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . tt2
+
+-- (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . X) b a (f ((a : X) . X) a b (l X a b f))
+
+-- (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . X) a b (f ((a : X) . X) b a (r X a b f))
+
+{-
+left2RightId : ???
+  = id X a a
+    id X b b
+-}
+
+
+     
+
+
+-- (i0 : I0) (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) . f (i0 X a b f)
+
+
+-- mab : left 
+
+
+
+
+

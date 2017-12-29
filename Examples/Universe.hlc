@@ -2,20 +2,22 @@ module Universe where
 
 import Unit
 
-type : * = (X : *) (f : (T : *) . X) . X
-wr : (A : *) . type
-   = (A : *) (X : *) (f : (T : *) . X) . f A
+type : U[0] = (X : U[0]) (f : (T : U[0]) . X) . X
+wr : (A : U[0]) . type
+   = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) . f A
+wr2 : type
+    = (X : U[0]) (f : (T : U[0]) . X) . f X
 
---uwr : (t : type) . *
---  = (t : type) . t * ((A : *) . A)
+--uwr : (t : type) . U[0]
+--  = (t : type) . t U[0] ((A : U[0]) . A)
 
 tUnit : type = wr unit
 
--- fun : (A : *) (B : *) (F : (a : A) . B) (tr : wr A) . wr B
---  = (A : *) (B : *) (F : (a : A) . B) (tr : wr A) (X : *) (f : (T : *) . X) . f B
+-- fun : (A : U[0]) (B : U[0]) (F : (a : A) . B) (tr : wr A) . wr B
+--  = (A : U[0]) (B : U[0]) (F : (a : A) . B) (tr : wr A) (X : U[0]) (f : (T : U[0]) . X) . f B
 
--- tr : (X : *) (f : (Z : *) . X) . f A
--- tr unit ((Z : *) . tt) 
+-- tr : (X : U[0]) (f : (Z : U[0]) . X) . f A
+-- tr unit ((Z : U[0]) . tt) 
 
 
 {-
@@ -27,6 +29,19 @@ uwr : (t : type) . U0
 
 -}
 
+
+type' : U[0] = (X : U[0]) (f : (T : U[0]) . X) (f' : (x : X) . f X) . X
+wr' : (A : U[0]) . type'
+    = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) (f' : (x : X) . f X) . f A
+wr2' : (A : U[0]) . type'
+    = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) (f' : (x : X) . f X) . f X
+
+levelTest : (a : U[0]) . U[1]
+  = (a : U[0]) . a
+
+-- This fails to type-check, as it should.
+-- levelTest2 : (a : U[1]) . U[0]
+--  = (a : U[1]) . a
 
 
 

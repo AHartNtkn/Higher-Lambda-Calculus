@@ -23,8 +23,7 @@ printA i (Lam st a b) =
 --  if freeIn b 0
   "(" ++ st ++ " : " ++ printA i a ++ ") . " ++ printA (1 + i) b
 --  else parenA i a ++ " . " ++ printA (1 + i) b
-printA i U = "*"
-printA i Kind = "Kind"
+printA _ (U i) = "U[" ++ show i ++ "]"
 
 pshow = printA 0
 

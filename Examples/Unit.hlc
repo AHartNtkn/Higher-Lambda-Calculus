@@ -1,14 +1,14 @@
 module Unit where
 
-unit : * = (A : *) (a : A) . A
-tt : unit = (A : *) (a : A) . a
+unit : U[0] = (A : U[0]) (a : A) . A
+tt : unit = (A : U[0]) (a : A) . a
 ttid : (tt' : tt) . tt = (tt' : tt) . tt'
 
-unit2 : * = (A : *) (a : A) (a' : a) . A
-tt2 : unit2 = (A : *) (a : A) (a' : a) . a
-tt' : tt2 = (A : *) (a : A) (a' : a) . a'
+unit2 : U[0] = (A : U[0]) (a : A) (a' : a) . A
+tt2 : unit2 = (A : U[0]) (a : A) (a' : a) . a
+tt' : tt2 = (A : U[0]) (a : A) (a' : a) . a'
 
 unitMap : (u : unit) . unit2
  = (u : unit) . u unit2 tt2
 
-map : * = (tt' : tt) . unit
+map : U[0] = (tt' : tt) . unit

@@ -27,16 +27,14 @@ data Term
     | Var String Int
     | Name String
     | Term :% Term
-    | U 
-    | Kind deriving (Show)
+    | U Int deriving (Show)
 
 instance Eq Term where
   Lam _ a b == Lam _ a' b' = a == a' && b == b'
   Var _ i == Var _ j = i == j
   Name i == Name j = i == j
   a :% b == a' :% b' = a == a' && b == b'
-  U == U = True
-  Kind == Kind = True
+  U i == U j = i == j
   _ == _ = False
 
 {- The context used by the interpreter -}
