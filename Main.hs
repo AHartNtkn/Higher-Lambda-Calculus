@@ -114,10 +114,7 @@ mainLoop s = (do
          (errPr ((pExp . resolveLayout True . myLexer) input) >>= convert >>= nf >>= liftIO . putStrLn . printA 0)
          (\_ -> return ())
        mainLoop s
-    ) `catchError` (\_ -> do
-      liftIO $ putStrLn "Restarting with empty context. Enter \":r\" to reload from file."
-      mainLoop s
-      )
+    ) `catchError` (\_ -> mainLoop s)
 
 -- Main program
 main :: IO String

@@ -19,7 +19,8 @@ Where.    ExpWhere ::= Exp "where" "{" [Decl] "}" ;
 NoWhere.  ExpWhere ::= Exp ;
 
 SLet.          Exp  ::= "let" "{" [Decl] "}" "in" Exp ;
-SLam.          Exp1 ::= [PTele] "." Exp ;
+SLam.          Exp1 ::= [PTele] "." Exp1 ;
+SPi.           Exp1 ::= [PTele] "->" Exp1 ;
 SApp.          Exp2 ::= Exp2 Exp3 ;
 SVar.          Exp3 ::= AIdent ;
 SU.            Exp3 ::= "U[" Lv "]" ;
