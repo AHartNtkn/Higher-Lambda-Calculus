@@ -1,0 +1,45 @@
+module Prod where
+
+uni : (A : U[0]) . U[0] = (A : U[0]) (X : U[0]) (f : (a : A) . X) . X
+wr : (A : U[0]) (a : A) . uni A
+  = (A : U[0]) (a : A) (X : U[0]) (f : (a : A) . X) . f a
+uw : (A : U[0]) (u : uni A) . A
+  = (A : U[0]) (u : uni A) . u A ((a : A) . a)
+
+prod : (A : U[0]) (B : U[0]) . U[0] = (A : U[0]) (B : U[0]) (X : U[0]) (f : (a : A) (b : B) . X) . X
+proj1 : (A : U[0]) (B : U[0]) (p : prod A B) . A
+  = (A : U[0]) (B : U[0]) (p : prod A B) . p A ((a : A) (b : B) . a)
+proj2 : (A : U[0]) (B : U[0]) (p : prod A B) . B
+  = (A : U[0]) (B : U[0]) (p : prod A B) . p B ((a : A) (b : B) . b)
+pair : (A : U[0]) (B : U[0]) (a : A) (b : B) . prod A B
+ = (A : U[0]) (B : U[0]) (a : A) (b : B) (X : U[0]) (f : (a : A) (b : B) . X) . f a b
+
+-- Doesn't type check, as it shouldn't.
+-- p' : (A : U[0]) . U[0] = (A : U[0]) . prod A
+
+inProd : (A : U[0]) (a : A) (b : A) . U[0]
+  = (A : U[0]) (a : A) (b : A) (X : U[0]) (f : (a' : a) (b' : b) . X) . X
+inPair : (A : U[0]) (a : A) (b : A) (a' : a) (b' : b) . inProd A a b
+  = (A : U[0]) (a : A) (b : A) (a' : a) (b' : b) (X : U[0]) (f : (a' : a) (b' : b) . X) . f a' b'
+-- How to work further with this type? Perhaps A needs to be a Cartesian category?
+
+inUni : (A : U[0]) (a : A) . U[0]
+  = (A : U[0]) (a : A) (X : U[0]) (f : (a' : a) . X) . X
+iwr : (A : U[0]) (a : A) (a' : a) . inUni A a
+    = (A : U[0]) (a : A) (a' : a) (X : U[0]) (f : (a' : a) . X) . f a'
+
+-- uw : (A : U[0]) (u : uni A) . A
+--   = (A : U[0]) (u : uni A) . u A ((a : A) . a)
+
+
+
+
+-- natural : (A : U[0]) (B : U[0]) (f : (a : A) . B) (g : (a : A) . B) (a : (f' : f) . g) (a : A) (fa : f a) . B
+--  = (A : U[0]) (B : U[0]) (f : (a : A) . B) (g : (a : A) . B) (a : (f' : f) . g) (a : A) (fa : f a) . g a
+
+-- hotep : (A : U[0]) (B : U[0]) (f : (a : A) . B) (g : (a : A) . B) (a : (f' : f) . g) (fa : f a) . g a
+--  = 
+
+
+
+

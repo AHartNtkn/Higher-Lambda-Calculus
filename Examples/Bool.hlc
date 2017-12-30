@@ -1,11 +1,13 @@
 module Bool where
 
-bool : * = (X : *) (x : X) (y : X) . X
-true : bool = (X : *) (x : X) (y : X) . x
-false : bool = (X : *) (x : X) (y : X) . y
+bool : U[0] = (X : U[0]) (x : X) (y : X) -> X
+true : bool = (X : U[0]) (x : X) (y : X) . x
+false : bool = (X : U[0]) (x : X) (y : X) . y
 
-trueid : (n : true) . true = (n : true) . n
+trueid : (n : true) -> true = (n : true) . n
 
-not : (b : bool) . bool = (b : bool) (X : *) (x : X) (y : X) . b X y x
-notnotcanc : (b : bool) (n : not (not b)) . b = (b : bool) (n : not (not b)) . n
+not : (b : bool) -> bool = (b : bool) (X : U[0]) (x : X) (y : X) . b X y x
 
+notnotcanc : (X : U[0]) (x : X) (y : X)
+             (b : bool) (n : not (not b) X x y) -> (b X x y)
+  = (X : U[0]) (x : X) (y : X) (b : bool) (n : not (not b) X x y) . n

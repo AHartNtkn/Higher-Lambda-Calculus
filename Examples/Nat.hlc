@@ -1,10 +1,16 @@
 module Nat where
 
-nat : * = (A : *) (s : (a : A) . A) (z : A) . A
+nat : U[0] = (A : U[0]) (s : (a : A) . A) (z : A) . A
 
-zero : nat = (A : *) (s : (a : A) . A) (z : A) . z
+zero : nat = (A : U[0]) (s : (a : A) . A) (z : A) . z
 
-natfun : (A : *) (s : (a : A) . A) (z : A) . *
-  = (A : *) (s : (a : A) . A) (z : A) . A
+natfun : (A : U[0]) (s : (a : A) . A) (z : A) . U[0]
+  = (A : U[0]) (s : (a : A) . A) (z : A) . A
+
+-- Doesn't type check, and shouldn't.
+-- nconv : (n : nat) . natfun
+--   = (n : nat) . n
 
 znat : natfun nat = zero nat
+
+znat2 : natfun = zero

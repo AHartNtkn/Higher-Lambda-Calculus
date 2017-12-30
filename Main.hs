@@ -108,13 +108,16 @@ mainLoop s = (do
          (errPr ((pExp . resolveLayout True . myLexer) l) >>= convert >>= liftIO . putStrLn . show)
          (\_ -> return ())
        mainLoop s
-    ":r"   -> fileToCtx s >> mainLoop s
+    ":r"   -> put Map.empty >> fileToCtx s >> mainLoop s
     _  -> do
        catchError
          (errPr ((pExp . resolveLayout True . myLexer) input) >>= convert >>= nf >>= liftIO . putStrLn . printA 0)
          (\_ -> return ())
        mainLoop s
-    ) `catchError` (\_ -> mainLoop s)
+    ) `catchError` (\_ -> do
+      liftIO $ putStrLn "Restarting with empty context. Enter \":r\" to reload from file."
+      mainLoop s
+      )
 
 -- Main program
 main :: IO String
@@ -124,6 +127,8 @@ main = do
   runProof (do
     liftIO $ hSetBuffering stdout NoBuffering
     liftIO $ putStrLn "Starting..."
-    fileToCtx $ head name
+    fileToCtx (head name) `catchError` (\_ -> do
+      put Map.empty
+      liftIO $ putStrLn "Restarting with empty context. Enter \":r\" to reload from file." )
     mainLoop $ head name)
   return "Goodbye!"
