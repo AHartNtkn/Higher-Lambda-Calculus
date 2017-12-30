@@ -96,9 +96,9 @@ If : (i0 : I0) . I1
 
 ## Install
 
-* Navigate to directory and run `cabal install`
-* The `higerlc.exe` will appear in `.\dist\build\higerlc\`
-* Load a program with `higerlc.exe Nat.hlc`
+U[0] Navigate to directory and run `cabal install`
+U[0] The `higerlc.exe` will appear in `.\dist\build\higerlc\`
+U[0] Load a program with `higerlc.exe Nat.hlc`
 
 ## References
 
