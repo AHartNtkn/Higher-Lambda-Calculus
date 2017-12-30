@@ -24,7 +24,6 @@ proofError s = do
 infixl 9 :%
 data Term
     = Lam String Term Term
-    | Pi String Term Term
     | Var String Int
     | Name String
     | Term :% Term
@@ -32,7 +31,6 @@ data Term
 
 instance Eq Term where
   Lam _ a b == Lam _ a' b' = a == a' && b == b'
-  Pi _ a b == Pi _ a' b' = a == a' && b == b'
   Var _ i == Var _ j = i == j
   Name i == Name j = i == j
   a :% b == a' :% b' = a == a' && b == b'
@@ -46,13 +44,11 @@ type TopCtx = [(String, (Term, Term))]
 freeIn (Var s x)  n = x == n
 freeIn (d :% d1)  n = freeIn d n || freeIn d1 n
 freeIn (Lam _ t tp) n = freeIn t n || freeIn tp (1 + n)
-freeIn (Pi _ t tp) n = freeIn t n || freeIn tp (1 + n)
 freeIn _          n = False
 
 -- Increment free variables
 quote' n (Var s x)   = if x >= n then Var s (1 + x) else Var s x
 quote' n (Lam s t d) = Lam s (quote' n t) (quote' (1 + n) d)
-quote' n (Pi s t d)  = Pi s (quote' n t) (quote' (1 + n) d)
 quote' n (d :% b)    = quote' n d :% quote' n b
 quote' n x           = x
 
@@ -66,7 +62,6 @@ sub s n (Var st x) =
     EQ -> s
     LT -> Var st x
 sub s n (Lam st t d) = Lam st (sub s n t) (sub (quote s) (1 + n) d)
-sub s n (Pi st t d) = Pi st (sub s n t) (sub (quote s) (1 + n) d)
 sub s n (d :% b)  = sub s n d :% sub s n b
 sub s n x         = x
 
@@ -97,7 +92,6 @@ nf' ee = spine ee [] where
   spine (f :% a) as = spine f (a:as)
   spine (Lam st t e) [] = Lam st <$> nf' t <*> nf' e
   spine (Lam st t e) (u:as) = spine (sub u 0 e) as
-  spine (Pi st a b) xs = Pi st <$> nf' a <*> nf' b
   spine (Name s) as = do
         tbl <- get
         case Map.lookup s tbl of
