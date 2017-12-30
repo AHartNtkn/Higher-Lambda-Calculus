@@ -76,6 +76,11 @@ whnf' names ee = spine ee [] where
   spine :: Term -> [Term] -> Proof Term
   spine (f :% a) as = spine f (a:as)
   spine (Lam s t z) (u:as) = spine (sub u 0 z) as
+  -- Eta conversion
+  spine (Lam st t (tp :% Var s 0)) [] =
+            if freeIn tp 0
+            then return (Lam st t (tp :% Var s 0))
+            else spine (sub (Var s 0) 0 tp) []
   spine (Name i) as = 
     if names -- Should names/levels be removed
     then do
@@ -95,6 +100,11 @@ nwhnf = whnf' True
 nf' :: Term -> Proof Term
 nf' ee = spine ee [] where
   spine (f :% a) as = spine f (a:as)
+  -- Eta conversion
+  spine (Lam st t (tp :% Var s 0)) [] =
+            if freeIn tp 0
+            then Lam st <$> nf' t <*> nf' (tp :% Var s 0)
+            else spine (sub (Var s 0) 0 tp) []
   spine (Lam st t e) [] = Lam st <$> nf' t <*> nf' e
   spine (Lam st t e) (u:as) = spine (sub u 0 e) as
   spine (Pi st a b) xs = Pi st <$> nf' a <*> nf' b

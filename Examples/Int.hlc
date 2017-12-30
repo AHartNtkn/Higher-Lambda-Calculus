@@ -58,10 +58,17 @@ subWrapperFun : (A : U[0]) (a : A) (b : A) (f : (a' : a) . b) (sw : subWrapper A
 intWrFun : (sw : subWrapper int I0) . subWrapper int I1
   = subWrapperFun int I0 I1 IF
 
--- Eliminate into the type universe.
--- intTypeElim : (A : U[0]) (B : U[0]) (F : (a : A) . B) (i : int) . U[0]
---  = (A : U[0]) (B : U[0]) (F : (a : A) . B) (i : int) . i U[0] A B F
 
+
+-- A type with two terms and a synthetic function between them.
+Int : U[1] = (X : U[1]) (a : X) (b : X) (f : (a' : a) . b) . X
+II0 : Int = (X : U[1]) (a : X) (b : X) (f : (a' : a) . b) . a
+II1 : Int = (X : U[1]) (a : X) (b : X) (f : (a' : a) . b) . b
+IIF : (i0 : II0) . II1 = (i0 : II0) (X : U[1]) (a : X) (b : X) (f : (a' : a) . b) . f (i0 X a b f)
+
+-- Eliminate into the type universe.
+intTypeElim : (A : U[0]) (B : U[0]) (F : (a : A) . B) (i : Int) . U[0]
+  = (A : U[0]) (B : U[0]) (F : (a : A) . B) (i : Int) . i U[0] A B F
 
 
 
