@@ -13,4 +13,13 @@ natfun : (A : U[0]) (s : (a : A) . A) (z : A) . U[0]
 
 znat : natfun nat = zero nat
 
+
 znat2 : natfun = zero
+
+-- Doesn't type check, and shouldn't.
+-- natfun2 : (A : U[0]) (s : (a : A) . A) (z : A) . U[0]
+--  = nat
+
+-- Doesn't type check, and shouldn't.
+-- natfun2 : (A : U[0]) (s : (a : A) . A) (z : A) . U[0]
+--  = (A : U[0]) (s : (a : A) . A) (z : A) . nat A s z

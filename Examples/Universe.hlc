@@ -2,6 +2,10 @@ module Universe where
 
 import Unit
 
+
+levelTest : (a : U[0]) . U[1]
+  = (a : U[0]) . a
+
 type : U[0] = (X : U[0]) (f : (T : U[0]) . X) . X
 wr : (A : U[0]) . type
    = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) . f A
@@ -30,14 +34,28 @@ uwr : (t : type) . U0
 -}
 
 
-type' : U[0] = (X : U[0]) (f : (T : U[0]) . X) (f' : (x : X) . f X) . X
+type' : U[0] = (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . X
 wr' : (A : U[0]) . type'
-    = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) (f' : (x : X) . f X) . f A
+    = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f A
 wr2' : (A : U[0]) . type'
-    = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) (f' : (x : X) . f X) . f X
+    = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f X
+term' : (A : U[0]) (a : A) . wr' A
+  = (A : U[0]) (a : A) (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f' A a  -- f A
 
-levelTest : (a : U[0]) . U[1]
-  = (a : U[0]) . a
+pi' : (A : U[0]) (B : U[0]) (F : (a : A) . B) . wr' ((a : A) . B)
+   = (A : U[0]) (B : U[0]) (F : (a : A) . B) (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T)
+   . f' ((a : A) . B) F
+
+-- app' : (A : U[0]) (B : U[0]) (wa : wr' A) (wf : wr' ((a : A) . B)) . wr' B
+--  = (A : U[0]) (B : U[0]) (wa : wr' A) (wf : wr' ((a : A) . B)) . ??? 
+
+-- (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f A
+-- (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f (((a : A) . B))
+
+
+-- f B
+
+
 
 -- This fails to type-check, as it should.
 -- levelTest2 : (a : U[1]) . U[0]

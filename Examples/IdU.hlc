@@ -1,0 +1,18 @@
+module IdU where
+
+import Id
+
+subWrapper : (A : U[1]) (a : A) . U[1]
+  = (A : U[1]) (a : A) (X : U[1]) (f : (a' : a) . X) . X
+
+subWrap : (A : U[1]) (a : A) (a' : a) . subWrapper A a
+  = (A : U[1]) (a : A) (a' : a) (X : U[1]) (f : (a' : a) . X) . f a'
+
+-- The subWrapper is functorial over f
+subWrapperFun : (A : U[1]) (a : A) (b : A) (f : (a' : a) . b) (sw : subWrapper A a) . subWrapper A b
+           = (A : U[1]) (a : A) (b : A) (f : (a' : a) . b) (sw : subWrapper A a) . sw (subWrapper A b) ((a' : a) . subWrap A b (f a'))
+
+{-
+intervalPath : (l : left) (r : right) (sw : subWrapper U[0] (P l)) . subWrapper U[0] (P r)
+  = (l : left) (r : right) . subWrapperFun U[0] (P l) (P r) ???
+-}

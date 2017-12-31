@@ -2,10 +2,10 @@ module Id where
 
 import Unit
 
-id : (A : U[0]) (a : A) (b : A) . U[0]
+Id : (A : U[0]) (a : A) (b : A) . U[0]
   = (A : U[0]) (a : A) (b : A) (P : (a : A) . U[0]) (pa : P a) . P b
 
-refl : (A : U[0]) (a : A) . id A a a
+refl : (A : U[0]) (a : A) . Id A a a
      = (A : U[0]) (a : A) (P : (a : A) . U[0]) (pa : P a) . pa
 
 subId : (A : U[0]) (a : A) (a' : a) (b' : a) . U[0]
@@ -35,33 +35,36 @@ left2Left : (l : left) . left
 right2Right : (r : right) . right
   = (r : right) (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . X) b b (r X a b f)
 
+
+-- PLeft2Right : (P : (i : interval) . *) (pl : P left) . P right
+--  = (P : (i : interval) . *) (pl : P left) . 
+
+
+
+intt : U[0]
+  = (X : U[0]) (a : X) (b : X) (f : Id X a b) . X
+
+inttElim : (A : U[0]) (a : A) (b : A) (e : Id A a b) (i : intt) . A
+        = (A : U[0]) (a : A) (b : A) (e : Id A a b) (i : intt) . i A a b e
+
+
 {-
-converge : (l : right) . left
-  = (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . unit2) tt2 tt2 tt'
+Note: This doesn't type-check
+
+  intt : U[0]
+    = (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) . P b) . X
+
+  inttElim : (A : U[0]) (a : A) (b : A) (e : Id A a b) (i : intt) . A
+          = (A : U[0]) (a : A) (b : A) (e : Id A a b) (i : intt) . i A a b e
+
+since (P : (a : X) . U[0]) (pa : P a) . P b is assumed by default to be of type
+ (P : (a : X) . U[0]) (pa : P a) . U[0], not U[0]. Consider adding additional
+ type annotations so we can write something like
+
+  intt : U[0]
+    = (X : U[0]) (a : X) (b : X) (f : ((P : (a : X) . U[0]) (pa : P a) . P b : U[0])) . X
+
+which should then type-check properly.
 -}
-
--- (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . tt2
-
--- (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . X) b a (f ((a : X) . X) a b (l X a b f))
-
--- (X : U[0]) (a : X) (b : X) (f : (P : (a : X) . U[0]) (pa : P a) (pb : P b) (pa' : pa) . pb) . f ((a : X) . X) a b (f ((a : X) . X) b a (r X a b f))
-
-{-
-left2RightId : ???
-  = id X a a
-    id X b b
--}
-
-
-     
-
-
--- (i0 : I0) (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) . f (i0 X a b f)
-
-
--- mab : left 
-
-
-
 
 
