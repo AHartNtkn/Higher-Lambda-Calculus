@@ -23,10 +23,10 @@ nat : U[0] = (A = U[0]) (s + (a + A) . A) (z + A) . A
 zero : nat = (A = U[0]) (s + (a + A) . A) (z + A) . z
 ```
 
-Note that `+`, `-`, `*`, an `=` are used in place of the typing judgment `:`. This
+Note that `+`, `-`, `*`, and `=` are used in place of the typing judgment `:`. This
 signifies the functoriality of the expression, `(z + A) . z` is covariantly functorial
 in `z`, `(z - A) . z` is contravariant, `(z * A) . z` is invariant, and `(z = A) . z` is
-isovariant. See the Nuyts for more information.
+isovariant. See the Nuyts thesis for more information.
 
 Note that pi-types and lambda expressions are fused. This means that
 `(A = U[0]) (s + (a + A) . A) (z + A) . A` could be the natural numbers,
@@ -108,7 +108,7 @@ If : (i0 + I0) . I1
 ## References
 
  * [Towards a Directed Homotopy Type Theory based on 4 Kinds of Variance](https://people.cs.kuleuven.be/~dominique.devriese/ThesisAndreasNuyts.pdf), Andreas Nuyts. This
-   paper describes variance annotations that this language uses.
+   paper describes the variance annotation system that this language uses.
 
 ## Author
 
