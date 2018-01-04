@@ -1,0 +1,187 @@
+module Tests where
+
+var1 : (a + U[0]) . U[0]
+  = (a + U[0]) . a
+
+uni1 : (a + U[0]) . U[1]
+  = (a + U[0]) . a
+
+{- This fails; as it should
+uni2 : (a + U[1]) . U[0]
+  = (a + U[1]) . a
+-}
+
+var2 : (a * U[0]) . U[0]
+  = (a * U[0]) . a
+
+{- This fails. Should it?
+var3 : (a = U[0]) . U[0]
+  = (a = U[0]) . a
+-}
+
+{- This fails. Should it?
+var4 : (a - U[0]) . U[0]
+  = (a - U[0]) . a
+-}
+
+void : U[0] = (a = U[0]) . a
+unit : U[0] = (a = U[0]) (a' + a) . a
+fun  : U[0] = (a = U[0]) (f + (a' + a) . a) . a
+fun2 : U[0] = (a = U[0]) (f + (a' + (a'' + a) . a) . a) . a
+
+-- Which one of these should fail? Should any of them? This seems too liberal.
+apT  : U[0] = (a = U[0]) (f + (a' + a) . a) (a' + a) (fa + f a') . a
+apT2 : U[0] = (a = U[0]) (f + (a' + a) . a) (a' - a) (fa + f a') . a
+apT3 : U[0] = (a = U[0]) (f + (a' + a) . a) (a' = a) (fa + f a') . a
+apT4 : U[0] = (a = U[0]) (f + (a' + a) . a) (a' * a) (fa + f a') . a
+apT5 : U[0] = (a = U[0]) (f + (a' - a) . a) (a' + a) (fa + f a') . a
+apT6 : U[0] = (a = U[0]) (f + (a' = a) . a) (a' + a) (fa + f a') . a
+apT7 : U[0] = (a = U[0]) (f + (a' = a) . a) (a' - a) (fa + f a') . a
+apT8 : U[0] = (a = U[0]) (f + (a' * a) . a) (a' + a) (fa + f a') . a
+apT9 : U[0] = (a = U[0]) (f + (a' = a) . a) (a' * a) (fa + f a') . a
+
+apR  : (a + U[0]) (f + (a' + a) . a) (a' + a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' + a) . a) (a' + a) (b' + a) (fa + f a') . b'
+apR2 : (a + U[0]) (f + (a' + a) . a) (a' - a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' + a) . a) (a' - a) (b' + a) (fa + f a') . b'
+apR3 : (a + U[0]) (f + (a' + a) . a) (a' = a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' + a) . a) (a' = a) (b' + a) (fa + f a') . b'
+apR4 : (a + U[0]) (f + (a' + a) . a) (a' * a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' + a) . a) (a' * a) (b' + a) (fa + f a') . b'
+apR5 : (a + U[0]) (f + (a' - a) . a) (a' + a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' - a) . a) (a' + a) (b' + a) (fa + f a') . b'
+apR6 : (a + U[0]) (f + (a' = a) . a) (a' + a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' = a) . a) (a' + a) (b' + a) (fa + f a') . b'
+apR7 : (a + U[0]) (f + (a' = a) . a) (a' - a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' = a) . a) (a' - a) (b' + a) (fa + f a') . b'
+apR8 : (a + U[0]) (f + (a' * a) . a) (a' + a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' * a) . a) (a' + a) (b' + a) (fa + f a') . b'
+apR9 : (a + U[0]) (f + (a' = a) . a) (a' * a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' = a) . a) (a' * a) (b' + a) (fa + f a') . b'
+
+
+var5 : (a + U[0]) (a' + a) . a
+  = (a + U[0]) (a' + a) . a'
+
+{- This fails. Should it?
+var6 : (a + U[0]) (a' - a) . a
+  = (a + U[0]) (a' - a) . a'
+-}
+
+var7 : (a + U[0]) (a' * a) . a
+  = (a + U[0]) (a' * a) . a'
+
+{- This fails. Should it?
+var8 : (a + U[0]) (a' = a) . a
+  = (a + U[0]) (a' = a) . a'
+-}
+
+var9 : (a - U[0]) (a' + a) . a
+  = (a - U[0]) (a' + a) . a'
+
+var10 : (a * U[0]) (a' + a) . a
+  = (a * U[0]) (a' + a) . a'
+
+var11 : (a = U[0]) (a' + a) . a
+  = (a = U[0]) (a' + a) . a'
+
+
+-- Variance tests: These should all pass
+vty1' : (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' + a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' + a) . f a'
+
+vty2' : (a + U[0]) (b + U[0]) (f + (a' = a) . b) (a' + a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' = a) . b) (a' + a) . f a'
+
+vty3' : (a + U[0]) (b + U[0]) (f + (a' = a) . b) (a' - a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' = a) . b) (a' - a) . f a'
+
+vty4' : (a + U[0]) (b + U[0]) (f + (a' = a) . b) (a' * a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' = a) . b) (a' * a) . f a'
+
+vty5' : (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' * a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' * a) . f a'
+
+vty6' : (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' * a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' * a) . f a'
+
+-- Variance tests: These should fail
+{- Successfully fails!
+vty7' : (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' = a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' = a) . f a'
+-}
+
+{- Successfully fails! 
+vty8' : (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' = a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' = a) . f a'
+-}
+
+{- Successfully fails!
+vty9' : (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' - a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' - a) . f a'
+-}
+
+{- Successfully fails!
+vty10' : (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' + a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' + a) . f a'
+-}
+
+{- Successfully fails!
+vty11' : (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' + a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' + a) . f a'
+-}
+
+{- Successfully fails!
+vty12' : (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' - a) . b
+      = (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' - a) . f a'
+-}
+
+-- Subtyping tests: These should pass
+vty1 : (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' + a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' + a) . b) . f
+
+vty2 : (a + U[0]) (b + U[0]) (f + (a' = a) . b) (a' + a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' = a) . b) . f
+
+vty3 : (a + U[0]) (b + U[0]) (f + (a' = a) . b) (a' - a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' = a) . b) . f
+
+vty4 : (a + U[0]) (b + U[0]) (f + (a' = a) . b) (a' * a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' = a) . b) . f
+
+vty5 : (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' * a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' + a) . b) . f
+
+vty6 : (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' * a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' - a) . b) . f
+
+-- Subtyping tests: These should fail
+{- Successfully fails!
+vty7 : (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' = a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' + a) . b) . f
+-}
+
+{- Successfully fails!
+vty8 : (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' = a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' * a) . b) . f
+-}
+
+{- Successfully fails!
+vty9 : (a + U[0]) (b + U[0]) (f + (a' + a) . b) (a' - a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' + a) . b) . f
+-}
+
+{- Successfully fails!
+vty10 : (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' + a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' - a) . b) . f
+-}
+
+{- Successfully fails!
+vty11 : (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' + a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' * a) . b) . f
+-}
+
+{- Successfully fails!
+vty12 : (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' - a) . b
+     = (a + U[0]) (b + U[0]) (f + (a' * a) . b) . f
+-}
