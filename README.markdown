@@ -1,5 +1,3 @@
-Note: This is an older version without variance annotations.
-
 # Higher Lambda Calculus
 
 This is a simple prototype implementation of a lambda calculus
