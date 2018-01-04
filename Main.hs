@@ -48,9 +48,9 @@ addDecl :: Decl -> Proof ()
 addDecl (DeclDef (AIdent defId) retTy eWhere) = do
     tr <- convert (whereToExp eWhere)
     ty <- convert retTy
-    check tr Plus ty
+    check tr ty
     tbl <- get
-    put $ Map.insert defId (tr , (ty, Plus)) tbl
+    put $ Map.insert defId (tr , ty) tbl
 
 -- Add a list of declarations to a context
 addDecls :: [Decl] -> Proof ()
@@ -100,7 +100,7 @@ mainLoop s = (do
            mainLoop s -- help command
     ':':'t':' ':l -> do
        catchError
-         (errPr (pExp . resolveLayout True . myLexer $ l) >>= convert >>= infer >>= liftIO . putStrLn . pshow . fst)
+         (errPr (pExp . resolveLayout True . myLexer $ l) >>= convert >>= infer >>= liftIO . putStrLn . pshow)
          (\_ -> return ())
        mainLoop s
     ':':'a':' ':l -> do
