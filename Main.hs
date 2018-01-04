@@ -50,7 +50,7 @@ addDecl (DeclDef (AIdent defId) retTy eWhere) = do
     ty <- convert retTy
     check tr Plus ty
     tbl <- get
-    put $ Map.insert defId (tr , ty) tbl
+    put $ Map.insert defId (tr , (ty, Plus)) tbl
 
 -- Add a list of declarations to a context
 addDecls :: [Decl] -> Proof ()

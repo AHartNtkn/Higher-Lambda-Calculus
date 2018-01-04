@@ -9,9 +9,9 @@ import Control.Monad.Trans.Except hiding (liftIO)
 
 -- =*=*=*=*=*=*=*=* Proof Environment Monad *=*=*=*=*=*=*=*=*=
 
-type Proof = ExceptT String (ReaderT [(Term, Variance)] (StateT (Map.Map String (Term, Term)) IO))
+type Proof = ExceptT String (ReaderT [(Term, Variance)] (StateT (Map.Map String (Term, (Term, Variance))) IO))
 
-runProof :: Proof a -> IO (Either String a, Map.Map String (Term, Term))
+runProof :: Proof a -> IO (Either String a, Map.Map String (Term, (Term, Variance)))
 runProof p = runStateT (runReaderT (runExceptT p) []) Map.empty
 
 liftIO :: IO a -> Proof a
@@ -31,10 +31,10 @@ data Variance
   | Iso deriving (Eq)
 
 instance Show Variance where
-  show Plus = "+"
+  show Plus  = "+"
   show Minus = "-"
   show Times = "*"
-  show Iso = "="
+  show Iso   = "="
 
 vComp :: Variance -> Variance -> Variance
 vComp _ Iso = Iso
@@ -72,6 +72,12 @@ f258 Iso = Minus
 
 varyCtx :: Variance -> Proof a -> Proof a
 varyCtx v = local (map (\(t, v') -> (t, vComp v v')))
+
+varyNames :: Variance -> Proof ()
+varyNames v = do
+  tbl <- get
+  put (Map.map (\(tr,(ty,tv)) -> (tr,(ty,vComp v tv))) tbl)
+  return ()
 
 -- =*=*=*=*=*=*=*=* Syntax *=*=*=*=*=*=*=*=*=
 

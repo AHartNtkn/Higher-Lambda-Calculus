@@ -25,16 +25,15 @@ import RawSyntax
 
 
 goalType =
-    (Lam Plus "a'" (Var "a" 2) (Var "b" 2))
+    U 0
 goalTerm =
-    (Var "f" 0)
+    Lam Iso "a" (U 0) (Lam Plus "f" (Lam Plus "a'" (Var "a" 0) (Var "a" 1)) (Lam Plus "a'" (Var "a" 1) (Lam Plus "fa" (Var "f" 1 :% Var "a'" 0) (Var "a" 3))))
 
 -- check (Var "a'" 0) Minus (Var "a" 3)
 
 testPr :: Proof ()
 testPr = do
-  local ([(U 0, Plus), (U 0, Plus)] ++ ) $
-    check (Lam Iso "a'" (Var "a" 1) (Var "b" 1)) Plus (Lam Plus "a'" (Var "a" 1) (U 0))
+  check goalTerm Plus goalType
 
 --             
 

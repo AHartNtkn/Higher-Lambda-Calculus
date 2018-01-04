@@ -17,7 +17,7 @@ infer t = do
       case Map.lookup i tbl of
            Nothing -> proofError $ "Token " ++ i ++ " not found in context during type inference."
            -- Note: terms in the global context are always covariant.
-           Just t  -> return (snd t, Plus)
+           Just (_, t)  -> return t
     Var st n -> do
       ctx <- ask
       case (ctx , n) of
@@ -38,8 +38,16 @@ infer t = do
             check tr2 vtp1 tp1
             return (ty1 :% tr2, ty1v) --FIX ME: Should this return Plus instead?
           _ -> proofError $ "Application cannot be performed on non-function."
-      else proofError $ "Variance error: In order to infer application, function " ++
-                          pshow tr1 ++ " must be covariant, but instead it's of " ++ show ty1v ++ " variance."
+      else do -- NOTE: This is a speculative change. May need to be removed
+        varyNames Minus
+        varyCtx Minus $ check tr1 (vComp Minus ty1v) ty1'
+        varyNames Minus  -- END NOTE: ...
+        ty1 <- nwhnf ty1'
+        case ty1 of
+          Lam vtp1 _ tp1 tp2 -> do
+            check tr2 vtp1 tp1
+            return (ty1 :% tr2, ty1v)
+          _ -> proofError $ "Application cannot be performed on non-function."
     tr1 :@ tr2 -> undefined
     Lam ty1v s ty1 ty2 -> do
       infer ty1 -- This goes unused. ty1 just needs an inferable type.
@@ -48,10 +56,14 @@ infer t = do
         if weakenQ ty2'v Plus
         then return (Lam ty1v s ty1 ty2', Plus)
         else proofError $ "Variance error: In order to infer lambda expression, type " ++
-                          pshow ty2 ++ " must be covariant, but instead it's of " ++ show ty2'v ++ " variance."
+                          pshow ty2 ++ " must be (weakenable to) covariant, but instead it's of " ++ show ty2'v ++ " variance."
     U i -> return (U (i + 1), Times) -- Is this right? Should reasoning related to Plus be used?
 
 check :: Term -> Variance -> Term -> Proof ()
+check tr Minus ty = do
+  varyNames Minus
+  varyCtx Minus $ check tr Plus ty
+  varyNames Minus
 check tr vtr ty =
   case tr of
     Name i -> do
@@ -60,7 +72,7 @@ check tr vtr ty =
         tbl <- get
         case Map.lookup i tbl of
              Nothing -> proofError $ "Token " ++ i ++ " not found in context during type checking."
-             Just (_, t)  -> do
+             Just (_, (t, _))  -> do
                tynf <- nf ty
                tnf <- nf t
                case (tynf, tnf) of
@@ -120,12 +132,14 @@ check tr vtr ty =
         U i -> 
           if weakenQ vtr Plus
           then do
-            (_, atytyv) <- infer aty
-            if weakenQ atytyv (f258 atyv)
-            then local ((aty, Times):) $ check tr' Plus (U i)
-            else proofError $ "Variance error during lambda-universe check; hypothesis of type " ++ pshow aty ++
+            (atyty, atytyv) <- infer aty
+            check aty (f258 atyv) atyty
+            local ((aty, Times):) $ check tr' Plus (U i)
+            {-
+            proofError $ "Variance error during lambda-universe check; hypothesis of type " ++ pshow aty ++
                               " must be some type of variance (weakenable to) " ++ show (f258 atyv) ++
                               ", instead has variance " ++ show atytyv ++ "."
+            -}
           else proofError $ "Variance error during lambda-universe check; " ++
                             "lambdas are canonically convenient in the type universe, but " ++ show vtr ++
                             " cannot be weakened to +."

@@ -26,6 +26,39 @@ var4 : (a - U[0]) . U[0]
 
 void : U[0] = (a = U[0]) . a
 unit : U[0] = (a = U[0]) (a' + a) . a
+fun  : U[0] = (a = U[0]) (f + (a' + a) . a) . a
+fun2 : U[0] = (a = U[0]) (f + (a' + (a'' + a) . a) . a) . a
+
+-- Which one of these should fail? Should any of them? This seems too liberal.
+apT  : U[0] = (a = U[0]) (f + (a' + a) . a) (a' + a) (fa + f a') . a
+apT2 : U[0] = (a = U[0]) (f + (a' + a) . a) (a' - a) (fa + f a') . a
+apT3 : U[0] = (a = U[0]) (f + (a' + a) . a) (a' = a) (fa + f a') . a
+apT4 : U[0] = (a = U[0]) (f + (a' + a) . a) (a' * a) (fa + f a') . a
+apT5 : U[0] = (a = U[0]) (f + (a' - a) . a) (a' + a) (fa + f a') . a
+apT6 : U[0] = (a = U[0]) (f + (a' = a) . a) (a' + a) (fa + f a') . a
+apT7 : U[0] = (a = U[0]) (f + (a' = a) . a) (a' - a) (fa + f a') . a
+apT8 : U[0] = (a = U[0]) (f + (a' * a) . a) (a' + a) (fa + f a') . a
+apT9 : U[0] = (a = U[0]) (f + (a' = a) . a) (a' * a) (fa + f a') . a
+
+apR  : (a + U[0]) (f + (a' + a) . a) (a' + a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' + a) . a) (a' + a) (b' + a) (fa + f a') . b'
+apR2 : (a + U[0]) (f + (a' + a) . a) (a' - a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' + a) . a) (a' - a) (b' + a) (fa + f a') . b'
+apR3 : (a + U[0]) (f + (a' + a) . a) (a' = a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' + a) . a) (a' = a) (b' + a) (fa + f a') . b'
+apR4 : (a + U[0]) (f + (a' + a) . a) (a' * a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' + a) . a) (a' * a) (b' + a) (fa + f a') . b'
+apR5 : (a + U[0]) (f + (a' - a) . a) (a' + a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' - a) . a) (a' + a) (b' + a) (fa + f a') . b'
+apR6 : (a + U[0]) (f + (a' = a) . a) (a' + a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' = a) . a) (a' + a) (b' + a) (fa + f a') . b'
+apR7 : (a + U[0]) (f + (a' = a) . a) (a' - a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' = a) . a) (a' - a) (b' + a) (fa + f a') . b'
+apR8 : (a + U[0]) (f + (a' * a) . a) (a' + a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' * a) . a) (a' + a) (b' + a) (fa + f a') . b'
+apR9 : (a + U[0]) (f + (a' = a) . a) (a' * a) (b' + a) (fa + f a') . a
+     = (a + U[0]) (f + (a' = a) . a) (a' * a) (b' + a) (fa + f a') . b'
+
 
 var5 : (a + U[0]) (a' + a) . a
   = (a + U[0]) (a' + a) . a'
@@ -78,7 +111,7 @@ vty7' : (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' = a) . b
       = (a + U[0]) (b + U[0]) (f + (a' - a) . b) (a' = a) . f a'
 -}
 
-{- Successfully fails!
+{- Successfully fails! 
 vty8' : (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' = a) . b
       = (a + U[0]) (b + U[0]) (f + (a' * a) . b) (a' = a) . f a'
 -}

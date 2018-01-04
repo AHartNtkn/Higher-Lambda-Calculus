@@ -1,12 +1,14 @@
 module Nat where
 
-nat : U[0] = (A + U[0]) (s + (a + A) . A) (z + A) . A
+endo : (A * U[0]) . U[0] = (A * U[0]) (a + A) . A
 
-zero : nat = (A + U[0]) (s + (a + A) . A) (z + A) . z
+nat : U[0] = (A * U[0]) (s + endo A) (z + A) . A
+
+zero : nat = (A * U[0]) (s + endo A) (z + A) . z
 
 -- Note: There's a glitch issue here. This *should* type-check.
--- succ : (n + nat) . nat
---   = (n + nat) (A = U[0]) (s + (a + A) . A) (z + A) . s (n A s z)
+succ : (n + nat) . nat
+     = (n + nat) (A * U[0]) (s + endo A) (z + A) . s (n A s z)
 
 natfun : (A + U[0]) (s + (a + A) . A) (z + A) . U[0]
   = (A + U[0]) (s + (a + A) . A) (z + A) . A
