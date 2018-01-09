@@ -37,9 +37,6 @@ instance Eq Term where
   U i == U j = i == j
   _ == _ = False
 
-{- The context used by the interpreter -}
-type TopCtx = [(String, (Term, Term))]
-
 -- Check if a variable occures freely in a term
 freeIn (Var s x)  n = x == n
 freeIn (d :% d1)  n = freeIn d n || freeIn d1 n
