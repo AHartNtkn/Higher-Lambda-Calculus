@@ -32,6 +32,8 @@ data Term
 
 instance Eq Term where
   Lam _ a b == Lam _ a' b' = a == a' && b == b'
+  Lam s a b == c = b == quote c :% Var s 0
+  c == Lam s a b = quote c :% Var s 0 == b
   Var _ i == Var _ j = i == j
   Name i == Name j = i == j
   Dec t _ == Dec t' _ = t == t'

@@ -32,4 +32,7 @@ vcomp : (A : U[0]) (B : U[0]) (f : (a : A) B) (g : (a : A) B)
         (a : (f' : f) g) (h : (a : A) B) (b : (g' : g) h)
         (f' : f) b (a f')
 
+eta : (A : U[0]) (B : (a : A) U[0]) (f : (a : A) B a) B
+  = (A : U[0]) (B : (a : A) U[0]) (f : (a : A) B a) f
+
  
