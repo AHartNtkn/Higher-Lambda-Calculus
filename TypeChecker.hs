@@ -64,6 +64,12 @@ check tr ty =
                  then return ()
                  else proofError $ "Size error during global name lookup. " ++ pshow tr ++ " of type "
                                       ++ pshow tnf ++ " is too big for universe " ++ pshow tynf ++ "."
+               (U j, _) -> do
+                  luaty <- lowestU tnf
+                  if luaty <= j
+                  then return ()
+                  else proofError $ "Expression " ++ pshow tr ++ " is too big for universe " ++ pshow (U j) ++
+                           ", it resides within " ++ pshow (U luaty) ++ " during name lookup."
                _   -> do
                  if tnf == tynf
                  then return ()
@@ -82,6 +88,12 @@ check tr ty =
               then return ()
               else proofError $ "Size error during local variable lookup. " ++ pshow tr ++ " of type "
                                   ++ pshow xnf ++ " is too big for universe " ++ pshow tynf ++ "."
+            (U j, _) -> do
+               luaty <- lowestU xnf
+               if luaty <= j
+               then return ()
+               else proofError $ "Expression " ++ pshow tr ++ " is too big for universe " ++ pshow (U j) ++
+                           ", it resides within " ++ pshow (U luaty) ++ " during name lookup."
             _ ->
               if tynf == xnf
               then do 
@@ -104,7 +116,7 @@ check tr ty =
           luaty <- lowestU tr
           if luaty <= i
           then return ()
-          else proofError $ "Lambda expression " ++ pshow tr ++ " is too big for univese " ++ pshow (U i) ++
+          else proofError $ "Lambda expression " ++ pshow tr ++ " is too big for universe " ++ pshow (U i) ++
                    ", it resides within " ++ pshow (U luaty) ++ "."
         _ -> proofError $ "Lambdas can only be Lam or Universe types, not " ++ pshow tyw ++ "."
     tr1 :% tr2 -> do

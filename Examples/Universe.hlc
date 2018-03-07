@@ -3,63 +3,118 @@ module Universe where
 import Unit
 
 
-levelTest : (a : U[0]) . U[1]
-  = (a : U[0]) . a
+-- =-=-=--=-=-=- Various Universe Level Tests --=-=-=-=-=-=
 
-type : U[0] = (X : U[0]) (f : (T : U[0]) . X) . X
-wr : (A : U[0]) . type
-   = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) . f A
+levelTest : (a : U[0]) U[1]
+  = (a : U[0]) a
+
+-- These fail to type-check, as they should.
+-- levelTest2 : (a : U[1]) U[0]
+--  = (a : U[1]) a
+
+-- levelTest3 : (a : U[1]) U[0]
+--   = (a : U[1]) U[0]
+
+unitUp : U[1] = (X : U[0]) (x : X) X
+
+-- These fail, as they should
+-- unitDown : U[0] = unitUp
+-- unitDown2 : U[0] = (A : U[0]) unitUp A
+
+-- unitPrime : U[1] = (A : U[1]) unit A
+-- unitPrime2 : U[0] = (A : U[0]) unitUp A
+
+unitUpFun : (X : U[0]) (x : X) U[1] = (X : U[0]) (x : X) X
+
+-- unitPrimeFun : U[0] = (A : U[0]) unitUpFun A
+
+
+
+
+
+
+
+
+
+
+
+
+
+type : U[0] = (X : U[0]) (f : (T : U[0]) X) X
+wr : (A : U[0]) type
+   = (A : U[0]) (X : U[0]) (f : (T : U[0]) X) f A
 wr2 : type
-    = (X : U[0]) (f : (T : U[0]) . X) . f X
+    = (X : U[0]) (f : (T : U[0]) X) f X
 
---uwr : (t : type) . U[0]
---  = (t : type) . t U[0] ((A : U[0]) . A)
+--uwr : (t : type) U[0]
+--  = (t : type) t U[0] ((A : U[0]) A)
 
 tUnit : type = wr unit
 
--- fun : (A : U[0]) (B : U[0]) (F : (a : A) . B) (tr : wr A) . wr B
---  = (A : U[0]) (B : U[0]) (F : (a : A) . B) (tr : wr A) (X : U[0]) (f : (T : U[0]) . X) . f B
+-- fun : (A : U[0]) (B : U[0]) (F : (a : A) B) (tr : wr A) wr B
+--  = (A : U[0]) (B : U[0]) (F : (a : A) B) (tr : wr A) (X : U[0]) (f : (T : U[0]) X) f B
 
--- tr : (X : U[0]) (f : (Z : U[0]) . X) . f A
--- tr unit ((Z : U[0]) . tt) 
+-- tr : (X : U[0]) (f : (Z : U[0]) X) f A
+-- tr unit ((Z : U[0]) tt) 
 
 
 {-
-type : U1 = (X : U1) (f : (T : U0) . X) . X
-wr : (A : U0) . type
-   = (A : U0) (X : U1) (f : (T : U0) . X) . f A
-uwr : (t : type) . U0
-   = (t : type) . t U0 ((A : U0) . A)
+type : U1 = (X : U1) (f : (T : U0) X) X
+wr : (A : U0) type
+   = (A : U0) (X : U1) (f : (T : U0) X) f A
+uwr : (t : type) U0
+   = (t : type) t U0 ((A : U0) A)
 
 -}
 
 
-type' : U[0] = (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . X
-wr' : (A : U[0]) . type'
-    = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f A
-wr2' : (A : U[0]) . type'
-    = (A : U[0]) (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f X
-term' : (A : U[0]) (a : A) . wr' A
-  = (A : U[0]) (a : A) (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f' A a  -- f A
+type' : U[0] = (X : U[0]) (f : (T : U[0]) X) (f' : (T : U[0]) (t : T) f T) X
+wr' : (A : U[0]) type'
+    = (A : U[0]) (X : U[0]) (f : (T : U[0]) X) (f' : (T : U[0]) (t : T) f T) f A
+wr2' : (A : U[0]) type'
+    = (A : U[0]) (X : U[0]) (f : (T : U[0]) X) (f' : (T : U[0]) (t : T) f T) f X
+term' : (A : U[0]) (a : A) wr' A
+  = (A : U[0]) (a : A) (X : U[0]) (f : (T : U[0]) X) (f' : (T : U[0]) (t : T) f T) f' A a  -- f A
 
-pi' : (A : U[0]) (B : U[0]) (F : (a : A) . B) . wr' ((a : A) . B)
-   = (A : U[0]) (B : U[0]) (F : (a : A) . B) (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T)
-   . f' ((a : A) . B) F
+pi' : (A : U[0]) (B : U[0]) (F : (a : A) B) wr' ((a : A) B)
+   = (A : U[0]) (B : U[0]) (F : (a : A) B) (X : U[0]) (f : (T : U[0]) X) (f' : (T : U[0]) (t : T) f T)
+   f' ((a : A) B) F
 
--- app' : (A : U[0]) (B : U[0]) (wa : wr' A) (wf : wr' ((a : A) . B)) . wr' B
---  = (A : U[0]) (B : U[0]) (wa : wr' A) (wf : wr' ((a : A) . B)) . ??? 
+-- app' : (A : U[0]) (B : U[0]) (wa : wr' A) (wf : wr' ((a : A) B)) wr' B
+--  = (A : U[0]) (B : U[0]) (wa : wr' A) (wf : wr' ((a : A) B)) ??? 
 
--- (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f A
--- (X : U[0]) (f : (T : U[0]) . X) (f' : (T : U[0]) (t : T) . f T) . f (((a : A) . B))
+-- (X : U[0]) (f : (T : U[0]) X) (f' : (T : U[0]) (t : T) f T) f A
+-- (X : U[0]) (f : (T : U[0]) X) (f' : (T : U[0]) (t : T) f T) f (((a : A) B))
 
 
 -- f B
 
 
 
--- This fails to type-check, as it should.
--- levelTest2 : (a : U[1]) . U[0]
---  = (a : U[1]) . a
+
+
+{-
+het : (A : *) (a : A) (B : *) (b : B) *
+    = (A : *) (a : A) (B : *) (b : B) (a' : a) b 
+
+depHet : (A : *) (a : A) (B : *) (b : (a' : a) B) *
+       = (A : *) (a : A) (B : *) (b : B) (a' : a) b a'
+
+func : (A : *) (B : *) (F : (a : A) B) *
+  = (A : *) (B : *) (F : (a : A) B) (a : A) (a' : a) F a
+
+confunc : (A : *) (B : *) (F : (a : A) B) *
+   = (A : *) (B : *) (F : (a : A) B) (a : A) (fa : F a) a
+
+not : (b : Bool) Bool
+ = (b : Bool) b Bool false true
+
+bid : (b : Bool) Bool
+ = (b : Bool) b Bool true false
+
+notFunc : func Bool Bool not
+ = (b : Bool) (b' : b) b' Bool false true
+-}
 
 
 
