@@ -16,6 +16,7 @@ parenA i a = printA i a
 printA :: Int -> Term -> String
 printA i (Name s) = s
 printA i (Var s n) = s
+printA i (Dec s t) = "(" ++ printA i s ++ " : " ++ printA i t ++ ") "
 printA i (a :% b) = printA i a ++ " " ++ parenA i b
 printA i (Lam st a l@Lam{}) = 
   "(" ++ st ++ " : " ++ printA i a ++ ") " ++ printA (1 + i) l

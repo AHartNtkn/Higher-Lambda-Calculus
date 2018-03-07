@@ -19,6 +19,7 @@ import qualified Data.HashMap.Strict as HM
 data ITerm
    = IVS String
    | IV String Int
+   | IDec ITerm ITerm
    | ILam String ITerm ITerm
    | IApp ITerm ITerm
    | IU Int
@@ -26,10 +27,11 @@ data ITerm
 
 {- Convert intermediate syntax into abstract syntax -}
 
--- Replace string variables with deBruijin indices
+-- Replace string variables with deBruijin indexes
 index :: String -> Int -> ITerm -> ITerm
 index s n (IVS x) = if s == x then IV x n else IVS x
 index s n (IV st x) = IV st x
+index s n (IDec t t1) = IDec (index s n t) (index s n t1)
 index s n (ILam x d d1) = ILam x (index s n d) (index s (1 + n) (index x 0 d1))
 index s n (IApp d d1) = IApp (index s n d) (index s n d1)
 index s n (IU i) = IU i
@@ -38,6 +40,7 @@ index s n (IU i) = IU i
 fromInter :: ITerm -> Proof Term
 fromInter (IV s x) = return $ Var s x
 fromInter (IVS x) = return $ Name x
+fromInter (IDec d d1) = Dec <$> fromInter d <*> fromInter d1
 fromInter (IApp d d1) = (:%) <$> fromInter d <*> fromInter d1
 fromInter (ILam x d d1) = Lam x <$> fromInter d <*> fromInter d1
 fromInter (IU i) = return (U i)
@@ -46,6 +49,7 @@ fromInter (IU i) = return (U i)
 fromCon :: Exp -> Proof ITerm
 fromCon (SLet d e) = proofError "TO DO: Implement let expressions"
 fromCon (SApp a b) = IApp <$> fromCon a <*> fromCon b
+fromCon (SDec a b) = IDec <$> fromCon a <*> fromCon b
 fromCon (SVar (AIdent e)) = return $ IVS e
 fromCon (SLam [PTele (SVar (AIdent e)) t] o) = ILam e <$> fromCon t <*> fromCon o
 fromCon (SLam (PTele (SVar (AIdent e)) t : l) o) = ILam e <$> fromCon t <*> fromCon (SLam l o)

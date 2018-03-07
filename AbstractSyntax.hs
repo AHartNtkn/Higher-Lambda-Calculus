@@ -26,6 +26,7 @@ data Term
     = Lam String Term Term
     | Var String Int
     | Name String
+    | Dec Term Term -- Decorate term with type
     | Term :% Term
     | U Int deriving (Show)
 
@@ -33,20 +34,16 @@ instance Eq Term where
   Lam _ a b == Lam _ a' b' = a == a' && b == b'
   Var _ i == Var _ j = i == j
   Name i == Name j = i == j
+  Dec t _ == Dec t' _ = t == t'
   a :% b == a' :% b' = a == a' && b == b'
   U i == U j = i == j
   _ == _ = False
-
--- Check if a variable occures freely in a term
-freeIn (Var s x)  n = x == n
-freeIn (d :% d1)  n = freeIn d n || freeIn d1 n
-freeIn (Lam _ t tp) n = freeIn t n || freeIn tp (1 + n)
-freeIn _          n = False
 
 -- Increment free variables
 quote' n (Var s x)   = if x >= n then Var s (1 + x) else Var s x
 quote' n (Lam s t d) = Lam s (quote' n t) (quote' (1 + n) d)
 quote' n (d :% b)    = quote' n d :% quote' n b
+quote' n (Dec d b)   = Dec (quote' n d) (quote' n b)
 quote' n x           = x
 
 quote = quote' 0
@@ -60,24 +57,26 @@ sub s n (Var st x) =
     LT -> Var st x
 sub s n (Lam st t d) = Lam st (sub s n t) (sub (quote s) (1 + n) d)
 sub s n (d :% b)  = sub s n d :% sub s n b
+sub s n (Dec d b) = Dec (sub s n d) (sub s n b)
 sub s n x         = x
 
 -- Reduce a term to weak head normal form.
 whnf' :: Bool -> Term -> Proof Term
 whnf' names ee = spine ee [] where
   spine :: Term -> [Term] -> Proof Term
-  spine (f :% a) as = spine f (a:as)
-  spine (Lam s t z) (u:as) = spine (sub u 0 z) as
-  spine (Name i) as = 
+  spine (f :% x) xs = spine f (x:xs)
+  spine (Dec x b) xs = spine x xs -- Is this correct?
+  spine (Lam s t z) (u:xs) = spine (sub u 0 z) xs
+  spine (Name i) xs = 
     if names -- Should names/levels be removed
     then do
       tbl <- get
       case Map.lookup i tbl of
         Nothing -> proofError $ "Token " ++ show i ++ " not found in context (whnf)."
-        Just t  -> spine (fst t) as
-    else app (Name i) as
-  spine f as = app f as
-  app f as = return $ foldl (:%) f as
+        Just t  -> spine (fst t) xs
+    else app (Name i) xs
+  spine f xs = app f xs
+  app f xs = return $ foldl (:%) f xs
 
 whnf = whnf' False
 nwhnf = whnf' True
@@ -86,15 +85,16 @@ nwhnf = whnf' True
 -- Normal Form
 nf' :: Term -> Proof Term
 nf' ee = spine ee [] where
-  spine (f :% a) as = spine f (a:as)
+  spine (f :% x) xs = spine f (x:xs)
+  spine (Dec x b) xs = spine x xs
   spine (Lam st t e) [] = Lam st <$> nf' t <*> nf' e
-  spine (Lam st t e) (u:as) = spine (sub u 0 e) as
-  spine (Name s) as = do
+  spine (Lam st t e) (u:xs) = spine (sub u 0 e) xs
+  spine (Name s) xs = do
         tbl <- get
         case Map.lookup s tbl of
           Nothing -> proofError $ "Token " ++ show s ++ " not found in context."
-          Just t  -> spine (fst t) as
-  spine f as = foldl (:%) f <$> mapM nf' as
+          Just t  -> spine (fst t) xs
+  spine f xs = foldl (:%) f <$> mapM nf' xs
 
 nf d = do
   r <- nf' d

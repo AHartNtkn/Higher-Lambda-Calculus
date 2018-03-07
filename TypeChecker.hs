@@ -9,6 +9,9 @@ import Control.Monad.Except
 import Control.Monad.Trans.Except
 
 infer :: Term -> Proof Term
+infer (Dec tr ty) = do
+  check tr ty
+  return ty
 infer t = do
   wt <- whnf t
   case wt of
@@ -20,7 +23,7 @@ infer t = do
     Var st n -> do
       ctx <- ask
       case (ctx , n) of
-        ([], _) -> proofError $ "Cannot infer term variable in empty context."
+        ([], _) -> proofError $ "Cannot infer term variable " ++ st ++ " in empty context."
         (x:g, 0) -> local tail $ do
                        infer x -- Note, this isn't used, x just needs some type.
                        return (quote x)
@@ -28,12 +31,10 @@ infer t = do
                        ty <- infer (Var st (n - 1))
                        return (quote ty)
     tr1 :% tr2 -> do
-      ty1 <- nwhnf =<< infer tr1
-      case ty1 of
-        Lam _ tp1 tp2 -> do
-          check tr2 tp1
-          return (ty1 :% tr2)
-        _ -> proofError $ "Application cannot be performed on non-function."
+      ty1 <- infer tr1
+      inty <- fun tr1 `catchError` (\e -> proofError $ e ++ "; Error encountered when assessing " ++ pshow tr1 ++ " : " ++ pshow ty1 ++ "." )
+      check tr2 inty
+      return (ty1 :% tr2)
     Lam s ty1 ty2 -> do
       infer ty1 -- This goes unused. ty1 just needs an inferable type.
       local (ty1:) $ do
@@ -44,6 +45,12 @@ infer t = do
 check :: Term -> Term -> Proof ()
 check tr ty =
   case tr of
+    Dec tr' ty' -> do
+      tynf <- nf ty
+      tynf' <- nf ty'
+      if tynf == tynf'
+      then check tr' ty
+      else proofError $ "Type decoration " ++ pshow tr ++ " does not match expected type " ++ pshow ty ++ "."
     Name i -> do
       tbl <- get
       case Map.lookup i tbl of
@@ -94,8 +101,11 @@ check tr ty =
           else proofError $ "Type of lam annotation didn't match type annotation. Expected "
                              ++ pshow ty1nf ++ "; saw " ++ pshow atynf ++ " instead."
         U i -> do
-          infer aty -- This goes unused. aty just needs an inferable type.
-          local (aty:) $ check tr' (U i)
+          luaty <- lowestU tr
+          if luaty <= i
+          then return ()
+          else proofError $ "Lambda expression " ++ pshow tr ++ " is too big for univese " ++ pshow (U i) ++
+                   ", it resides within " ++ pshow (U luaty) ++ "."
         _ -> proofError $ "Lambdas can only be Lam or Universe types, not " ++ pshow tyw ++ "."
     tr1 :% tr2 -> do
       tynf <- nf ty
@@ -112,9 +122,33 @@ check tr ty =
           else proofError $ "Failed to unify at application. Expected something of type "
                              ++ pshow tynf ++ "; instead saw " ++ pshow (tr1 :% tr2) ++ " of type " ++
                              pshow itynf ++ "."
-    U i -> do -- What to do to implement proper kinds?
+    U i -> do
       tyw <- nwhnf ty
       case tyw of
         U j -> if i < j then return () else proofError $ "Size error, level " ++ show i ++
                                                           " universe is not a term in the level " ++ show j ++ " universe."
         _ -> proofError $ "Universes can only exist in other universes, not " ++ pshow tyw ++ "."
+
+-- Calculate the lowest universe a term resides within.
+-- It seems like this should be used elsewhere. Hmm...
+lowestU :: Term -> Proof Int
+lowestU tr = nwhnf tr >>= lamgo where
+  lamgo (U i) = return (i + 1)
+  lamgo (Lam _ aty tr') = local (aty:) $ lamgo tr'
+  lamgo tr = do
+    tri <- nwhnf =<< infer tr
+    case tri of
+      U i -> return i
+      ty -> lowestU ty
+
+-- Calculate if a term is functional, and return the expected type of input.
+fun :: Term -> Proof Term
+fun tr = do
+  trw <- nwhnf tr
+  case trw of
+    Lam _ aty tr' -> return aty
+    U i -> proofError $ "Error during functional check: term " ++ pshow tr ++ " is not functional;" ++
+                " Application cannot be performed on non-function."
+    tr -> do
+      itr <- infer tr
+      fun itr
