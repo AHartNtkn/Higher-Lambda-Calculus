@@ -1,0 +1,22 @@
+module Functions where
+
+import Bool
+
+-- Higher Function application
+app : (A : U[0]) (B : U[0]) (F : (a : A) B) (f : F) (a : A) F a
+    = (A : U[0]) (B : U[0]) (F : (a : A) B) (f : F) (a : A) f a
+
+-- A definition of what it means to be a functor. 
+func : (A : U[0]) (B : U[0]) (F : (a : A) B) U[0] 
+  = (A : U[0]) (B : U[0]) (F : (a : A) B) (a : A) (a' : a) F a
+
+-- The not function is an auto-functor
+notFunc : func bool bool not = (b : bool) (b' : b) (X : U[0]) (x : X) (y : X) b' X y x
+
+-- A definition of the type of heteromorphisms between a and b.
+het : (A : U[0]) (a : A) (B : U[0]) (b : B) U[0]
+    = (A : U[0]) (a : A) (B : U[0]) (b : B) (a' : a) b 
+
+-- Dependent heteromorphisms
+depHet : (A : U[0]) (a : A) (B : U[0]) (b : (a' : a) B) U[0]
+       = (A : U[0]) (a : A) (B : U[0]) (b : (a' : a) B) (a' : a) b a'

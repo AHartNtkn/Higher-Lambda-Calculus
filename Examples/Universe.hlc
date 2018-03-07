@@ -5,15 +5,11 @@ import Unit
 
 -- =-=-=--=-=-=- Various Universe Level Tests --=-=-=-=-=-=
 
-levelTest : (a : U[0]) U[1]
-  = (a : U[0]) a
+levelTest : (a : U[0]) U[1] = (a : U[0]) a
 
 -- These fail to type-check, as they should.
--- levelTest2 : (a : U[1]) U[0]
---  = (a : U[1]) a
-
--- levelTest3 : (a : U[1]) U[0]
---   = (a : U[1]) U[0]
+-- levelTest2 : (a : U[1]) U[0] = (a : U[1]) a
+-- levelTest3 : (a : U[1]) U[0] = (a : U[1]) U[0]
 
 unitUp : U[1] = (X : U[0]) (x : X) X
 
@@ -27,6 +23,7 @@ unitUp : U[1] = (X : U[0]) (x : X) X
 unitUpFun : (X : U[0]) (x : X) U[1] = (X : U[0]) (x : X) X
 
 -- unitPrimeFun : U[0] = (A : U[0]) unitUpFun A
+-- unitPrimeFun2 : U[1] = (A : U[1]) unitUpFun A
 
 
 
@@ -105,15 +102,6 @@ func : (A : *) (B : *) (F : (a : A) B) *
 
 confunc : (A : *) (B : *) (F : (a : A) B) *
    = (A : *) (B : *) (F : (a : A) B) (a : A) (fa : F a) a
-
-not : (b : Bool) Bool
- = (b : Bool) b Bool false true
-
-bid : (b : Bool) Bool
- = (b : Bool) b Bool true false
-
-notFunc : func Bool Bool not
- = (b : Bool) (b' : b) b' Bool false true
 -}
 
 
