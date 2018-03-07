@@ -1,35 +1,35 @@
 module Functions where
 
 -- Function application
-app : (A : U[0]) (B : U[0]) (F : (a : A) . B) (a : A) . B
-    = (A : U[0]) (B : U[0]) (F : (a : A) . B) (a : A) . F a
+app : (A : U[0]) (B : U[0]) (F : (a : A) B) (a : A) B
+    = (A : U[0]) (B : U[0]) (F : (a : A) B) (a : A) F a
 
 -- Dependent function application
-appD : (A : U[0]) (B : (a : A) . U[0]) (F : (a : A) . B a) (a : A) . B a
-     = (A : U[0]) (B : (a : A) . U[0]) (F : (a : A) . B a) . F
+appD : (A : U[0]) (B : (a : A) U[0]) (F : (a : A) B a) (a : A) B a
+     = (A : U[0]) (B : (a : A) U[0]) (F : (a : A) B a) F
 
 -- Ordinary function composition
-comp : (A : U[0]) (B : U[0]) (F : (a : A) . B) (C : U[0]) (G : (b : B) . C) (a : A) . C
-   = (A : U[0]) (B : U[0]) (F : (a : A) . B) (C : U[0]) (G : (b : B) . C) (a : A) . G (F a)
+comp : (A : U[0]) (B : U[0]) (F : (a : A) B) (C : U[0]) (G : (b : B) C) (a : A) C
+   = (A : U[0]) (B : U[0]) (F : (a : A) B) (C : U[0]) (G : (b : B) C) (a : A) G (F a)
 
 -- Dependent function composition
 compD :
-   (A : U[0]) (B : (a : A) . U[0]) (F : (a : A) . B a)
-   (C : (a : A) (b : B a) . U[0]) (G : (a : A) (b : B a) . C a b)
-   (a : A) . C a (F a)
-  = (A : U[0]) (B : (a : A) . U[0]) (F : (a : A) . B a) (C : (a : A) (b : B a) . U[0]) (G : (a : A) (b : B a) . C a b) (a : A) . G a (F a)
+   (A : U[0]) (B : (a : A) U[0]) (F : (a : A) B a)
+   (C : (a : A) (b : B a) U[0]) (G : (a : A) (b : B a) C a b)
+   (a : A) C a (F a)
+  = (A : U[0]) (B : (a : A) U[0]) (F : (a : A) B a) (C : (a : A) (b : B a) U[0]) (G : (a : A) (b : B a) C a b) (a : A) G a (F a)
 
 
 -- Composition one level down
-comp1 : (A : U[0]) (a : A) (b : A) (f : (a' : a) . b) (c : A) (g : (b' : b) . c) (a' : a) . c
-   = (A : U[0]) (a : A) (b : A) (f : (a' : a) . b) (c : A) (g : (b' : b) . c) (a' : a) . g (f a')
+comp1 : (A : U[0]) (a : A) (b : A) (f : (a' : a) b) (c : A) (g : (b' : b) c) (a' : a) c
+   = (A : U[0]) (a : A) (b : A) (f : (a' : a) b) (c : A) (g : (b' : b) c) (a' : a) g (f a')
 
 -- Vertical function composition.
-vcomp : (A : U[0]) (B : U[0]) (f : (a : A) . B) (g : (a : A) . B)
-        (a : (f' : f) . g) (h : (b : A) . B) (b : (g' : g) . h)
-        (f' : f) . h
-      = (A : U[0]) (B : U[0]) (f : (a : A) . B) (g : (a : A) . B)
-        (a : (f' : f) . g) (h : (a : A) . B) (b : (g' : g) . h)
-        (f' : f) . b (a f')
+vcomp : (A : U[0]) (B : U[0]) (f : (a : A) B) (g : (a : A) B)
+        (a : (f' : f) g) (h : (b : A) B) (b : (g' : g) h)
+        (f' : f) h
+      = (A : U[0]) (B : U[0]) (f : (a : A) B) (g : (a : A) B)
+        (a : (f' : f) g) (h : (a : A) B) (b : (g' : g) h)
+        (f' : f) b (a f')
 
  

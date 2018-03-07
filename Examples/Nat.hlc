@@ -1,15 +1,15 @@
 module Nat where
 
-nat : U[0] = (A : U[0]) (s : (a : A) . A) (z : A) . A
+nat : U[0] = (A : U[0]) (s : (a : A) A) (z : A) A
 
-zero : nat = (A : U[0]) (s : (a : A) . A) (z : A) . z
+zero : nat = (A : U[0]) (s : (a : A) A) (z : A) z
 
-natfun : (A : U[0]) (s : (a : A) . A) (z : A) . U[0]
-  = (A : U[0]) (s : (a : A) . A) (z : A) . A
+natfun : (A : U[0]) (s : (a : A) A) (z : A) U[0]
+  = (A : U[0]) (s : (a : A) A) (z : A) A
 
 -- Doesn't type check, and shouldn't.
--- nconv : (n : nat) . natfun
---   = (n : nat) . n
+-- nconv : (n : nat) natfun
+--   = (n : nat) n
 
 znat : natfun nat = zero nat
 
@@ -17,9 +17,9 @@ znat : natfun nat = zero nat
 znat2 : natfun = zero
 
 -- Doesn't type check, and shouldn't.
--- natfun2 : (A : U[0]) (s : (a : A) . A) (z : A) . U[0]
+-- natfun2 : (A : U[0]) (s : (a : A) A) (z : A) U[0]
 --  = nat
 
 -- Doesn't type check, and shouldn't.
--- natfun2 : (A : U[0]) (s : (a : A) . A) (z : A) . U[0]
---  = (A : U[0]) (s : (a : A) . A) (z : A) . nat A s z
+-- natfun2 : (A : U[0]) (s : (a : A) A) (z : A) U[0]
+--  = (A : U[0]) (s : (a : A) A) (z : A) nat A s z

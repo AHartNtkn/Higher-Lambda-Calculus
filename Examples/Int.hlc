@@ -3,70 +3,70 @@ module Int where
 import Functions
 
 -- A type with two terms and a synthetic function between them.
-int : U[0] = (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) . X
-I0 : int = (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) . a
-I1 : int = (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) . b
-IF : (i0 : I0) . I1 = (i0 : I0) (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) . f (i0 X a b f)
+int : U[0] = (X : U[0]) (a : X) (b : X) (f : (a' : a) b) X
+I0 : int = (X : U[0]) (a : X) (b : X) (f : (a' : a) b) a
+I1 : int = (X : U[0]) (a : X) (b : X) (f : (a' : a) b) b
+IF : (i0 : I0) I1 = (i0 : I0) (X : U[0]) (a : X) (b : X) (f : (a' : a) b) f (i0 X a b f)
 
 -- A type with three terms and synthetic functions between them.
-jnt : U[0] = (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . X
-J0 : jnt = (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . a
-J1 : jnt = (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . b
-JF : (j0 : J0) . J1 = (j0 : J0) (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . f (j0 X a b f c g)
-J2 : jnt = (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . c
-JG : (j1 : J1) . J2 = (j1 : J1) (X : U[0]) (a : X) (b : X) (f : (a' : a) . b) (c : X) (g : (b' : b) . c) . g (j1 X a b f c g)
-JFG : (j0 : J0) . J2 = comp1 jnt J0 J1 JF J2 JG
+jnt : U[0] = (X : U[0]) (a : X) (b : X) (f : (a' : a) b) (c : X) (g : (b' : b) c) X
+J0 : jnt = (X : U[0]) (a : X) (b : X) (f : (a' : a) b) (c : X) (g : (b' : b) c) a
+J1 : jnt = (X : U[0]) (a : X) (b : X) (f : (a' : a) b) (c : X) (g : (b' : b) c) b
+JF : (j0 : J0) J1 = (j0 : J0) (X : U[0]) (a : X) (b : X) (f : (a' : a) b) (c : X) (g : (b' : b) c) f (j0 X a b f c g)
+J2 : jnt = (X : U[0]) (a : X) (b : X) (f : (a' : a) b) (c : X) (g : (b' : b) c) c
+JG : (j1 : J1) J2 = (j1 : J1) (X : U[0]) (a : X) (b : X) (f : (a' : a) b) (c : X) (g : (b' : b) c) g (j1 X a b f c g)
+JFG : (j0 : J0) J2 = comp1 jnt J0 J1 JF J2 JG
 
 -- Map IF onto JF
-ijf1 : (i : int) . jnt
-  = (i : int) . i jnt J0 J1 JF
+ijf1 : (i : int) jnt
+  = (i : int) i jnt J0 J1 JF
 
 -- Map IF onto JG
-ijf2 : (i : int) . jnt
-  = (i : int) . i jnt J1 J2 JG
+ijf2 : (i : int) jnt
+  = (i : int) i jnt J1 J2 JG
 
 -- Map IF onto JG o JF
-ijf3 : (i : int) . jnt
-  = (i : int) . i jnt J0 J2 JFG
+ijf3 : (i : int) jnt
+  = (i : int) i jnt J0 J2 JFG
 
--- mate : ? = (i : int) (x : ?) . 
+-- mate : ? = (i : int) (x : ?) 
 
-morph : (A : U[0]) . U[0] = (A : U[0]) (i : int) . A
+morph : (A : U[0]) U[0] = (A : U[0]) (i : int) A
 
-msource : (A : U[0]) (m : morph A) . A
-  = (A : U[0]) (m : morph A) . m I0
+msource : (A : U[0]) (m : morph A) A
+  = (A : U[0]) (m : morph A) m I0
 
-msource : (A : U[0]) (m : morph A) . A
-  = (A : U[0]) (m : morph A) . m I0
+msource : (A : U[0]) (m : morph A) A
+  = (A : U[0]) (m : morph A) m I0
 
-mtarget : (A : U[0]) (m : morph A) . A
-  = (A : U[0]) (m : morph A) . m I1
+mtarget : (A : U[0]) (m : morph A) A
+  = (A : U[0]) (m : morph A) m I1
 
--- hom : (A : U[0]) (a : A) (b : A) . U[0]
---    = (A : U[0]) (a : A) (b : A) . (f : (a' : a) . b) 
+-- hom : (A : U[0]) (a : A) (b : A) U[0]
+--    = (A : U[0]) (a : A) (b : A) (f : (a' : a) b) 
 
-subWrapper : (A : U[0]) (a : A) . U[0]
-  = (A : U[0]) (a : A) (X : U[0]) (f : (a' : a) . X) . X
+subWrapper : (A : U[0]) (a : A) U[0]
+  = (A : U[0]) (a : A) (X : U[0]) (f : (a' : a) X) X
 
-subWrap : (A : U[0]) (a : A) (a' : a) . subWrapper A a
-  = (A : U[0]) (a : A) (a' : a) (X : U[0]) (f : (a' : a) . X) . f a'
+subWrap : (A : U[0]) (a : A) (a' : a) subWrapper A a
+  = (A : U[0]) (a : A) (a' : a) (X : U[0]) (f : (a' : a) X) f a'
 
 -- The subWrapper is functorial over f
-subWrapperFun : (A : U[0]) (a : A) (b : A) (f : (a' : a) . b) (sw : subWrapper A a) . subWrapper A b
-           = (A : U[0]) (a : A) (b : A) (f : (a' : a) . b) (sw : subWrapper A a) . sw (subWrapper A b) ((a' : a) . subWrap A b (f a'))
+subWrapperFun : (A : U[0]) (a : A) (b : A) (f : (a' : a) b) (sw : subWrapper A a) subWrapper A b
+           = (A : U[0]) (a : A) (b : A) (f : (a' : a) b) (sw : subWrapper A a) sw (subWrapper A b) ((a' : a) subWrap A b (f a'))
 
-intWrFun : (sw : subWrapper int I0) . subWrapper int I1
+intWrFun : (sw : subWrapper int I0) subWrapper int I1
   = subWrapperFun int I0 I1 IF
 
 -- Eliminate into the type universe.
--- intTypeElim : (A : U[0]) (B : U[0]) (F : (a : A) . B) (i : int) . U[0]
---  = (A : U[0]) (B : U[0]) (F : (a : A) . B) (i : int) . i U[0] A B F
+-- intTypeElim : (A : U[0]) (B : U[0]) (F : (a : A) B) (i : int) U[0]
+--  = (A : U[0]) (B : U[0]) (F : (a : A) B) (i : int) i U[0] A B F
 
 
 
 
--- mcell : (A : U[0]) (m : morph A) (m' : msource A m) . mtarget A m
---  = (A : U[0]) (m : morph A) (m' : msource A m) . m IF
+-- mcell : (A : U[0]) (m : morph A) (m' : msource A m) mtarget A m
+--  = (A : U[0]) (m : morph A) (m' : msource A m) m IF
 
 
 
