@@ -6,7 +6,7 @@ import Bool
 app : (A : U[0]) (B : U[0]) (F : (a : A) B) (f : F) (a : A) F a
     = (A : U[0]) (B : U[0]) (F : (a : A) B) (f : F) (a : A) f a
 
--- A definition of what it means to be a functor. 
+-- A definition of functor? Not clear, seems like a functor.
 func : (A : U[0]) (B : U[0]) (F : (a : A) B) U[0] 
   = (A : U[0]) (B : U[0]) (F : (a : A) B) (a : A) (a' : a) F a
 
@@ -20,3 +20,35 @@ het : (A : U[0]) (a : A) (B : U[0]) (b : B) U[0]
 -- Dependent heteromorphisms
 depHet : (A : U[0]) (a : A) (B : U[0]) (b : (a' : a) B) U[0]
        = (A : U[0]) (a : A) (B : U[0]) (b : (a' : a) B) (a' : a) b a'
+
+hom : (A : U[0]) (B : U[0]) U[0]
+  = (A : U[0]) (B : U[0]) (a : A) B
+
+homFunc : (A : U[0]) func U[0] U[0] (hom A)
+ = (A : U[0]) (B : U[0]) (b : B) (a : A) b
+
+-- No way to make this work
+-- homFunc2 : (B : U[0]) func U[0] U[0] ((A : U[0]) hom A B)
+-- = (B : U[0]) (A : U[0]) (a : A) (a2 : A) a
+
+-- The usual definition of functor.
+functor : (A : U[0]) (B : U[0]) (F : (a : A) B) U[0]
+  = (A : U[0]) (B : U[0]) (F : (a : A) B) (a : A) (b : A) (f : (a' : a) b) (fa : F a) F b
+
+-- `not` is a functor. An interesting use of eta-equivalence. Note that
+-- fa : (X : U[0]) (x : X) (y : X) a X y x
+-- so that 
+-- (X : U[0]) (y : X) (x : X) fa X x y : (X : U[0]) (y : X) (x : X) a X y x
+-- meaning that, by eta-equivalence,
+-- (X : U[0]) (y : X) (x : X) fa X x y : a
+notFunctor : functor bool bool not
+  = (a : bool) (b : bool) (f : (a' : a) b) (fa : not a)
+    (X : U[0]) (x : X) (y : X) f ((X : U[0]) (y : X) (x : X) fa X x y) X y x
+
+-- not b
+
+-- fa : (X : U[0]) (x : X) (y : X) a X y x   f ((X : U[0]) (y : X) (x : X) fa X x y) X y x : a
+
+-- (X : U[0]) (y : X) (x : X) fa X x y : (X : U[0]) (y : X) (x : X) a X y x
+
+

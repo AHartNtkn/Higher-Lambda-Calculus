@@ -102,7 +102,7 @@ check tr ty =
               else proofError $ "Term does not have correct type. Expected something of type "
                                  ++ pshow tynf ++ "; saw " ++ pshow (Var st n) ++ " of type " ++ pshow xnf ++ " instead."
         (_:g, _) -> local tail $ check (Var st (n - 1)) (unquote ty)
-    Lam _ aty tr' -> do
+    Lam s aty tr' -> do
       tyw <- nwhnf ty
       case tyw of
         Lam _ ty1 ty2 -> do
@@ -118,7 +118,7 @@ check tr ty =
           then return ()
           else proofError $ "Lambda expression " ++ pshow tr ++ " is too big for universe " ++ pshow (U i) ++
                    ", it resides within " ++ pshow (U luaty) ++ "."
-        _ -> proofError $ "Lambdas can only be Lam or Universe types, not " ++ pshow tyw ++ "."
+        a -> check tr (Lam s aty (quote a :% Var s 0)) -- Implement eta-equivalence type-checking
     tr1 :% tr2 -> do
       tynf <- nf ty
       itynf <- nf =<< infer (tr1 :% tr2)
