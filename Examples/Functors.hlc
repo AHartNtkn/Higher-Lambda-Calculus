@@ -1,4 +1,4 @@
-module Functions where
+module Functors where
 
 import Bool
 
