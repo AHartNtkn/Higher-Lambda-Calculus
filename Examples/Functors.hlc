@@ -1,16 +1,17 @@
 module Functors where
 
 import Bool
+import Functions
 
 -- Higher Function application
-app : (A : U[0]) (B : U[0]) (F : (a : A) B) (f : F) (a : A) F a
+happ : (A : U[0]) (B : U[0]) (F : (a : A) B) (f : F) (a : A) F a
     = (A : U[0]) (B : U[0]) (F : (a : A) B) (f : F) (a : A) f a
 
 -- A definition of functor? Not clear, seems like a functor.
 func : (A : U[0]) (B : U[0]) (F : (a : A) B) U[0] 
   = (A : U[0]) (B : U[0]) (F : (a : A) B) (a : A) (a' : a) F a
 
--- The not function is an auto-functor
+-- The not function is an endo-functor
 notFunc : func bool bool not = (b : bool) (b' : b) (X : U[0]) (x : X) (y : X) b' X y x
 
 -- A definition of the type of heteromorphisms between a and b.
@@ -45,10 +46,24 @@ notFunctor : functor bool bool not
   = (a : bool) (b : bool) (f : (a' : a) b) (fa : not a)
     (X : U[0]) (x : X) (y : X) f ((X : U[0]) (y : X) (x : X) fa X x y) X y x
 
--- not b
+const : (A : U[0]) (B : U[0]) (b : B) (a : A) B
+  = (A : U[0]) (B : U[0]) (b : B) (a : A) b
 
--- fa : (X : U[0]) (x : X) (y : X) a X y x   f ((X : U[0]) (y : X) (x : X) fa X x y) X y x : a
+-- All constant functions are functors
+constFunctor : (A : U[0]) (B : U[0]) (b : B) functor A B (const A B b)
+  = (A : U[0]) (B : U[0]) (b : B) (a : A) (b' : A) (f : (a' : a) b') (fa : b) fa
 
--- (X : U[0]) (y : X) (x : X) fa X x y : (X : U[0]) (y : X) (x : X) a X y x
+id : (A : U[0]) (a : A) A
+  = (A : U[0]) (a : A) a
 
+-- Identity functions are endo-functors
+idFunctor : (A : U[0]) functor A A (id A)
+  = (A : U[0]) (a : A) (b : A) (f : (a' : a) b) f
+
+-- The hom function is a functor
+homFunctor : (A : U[0]) functor U[0] U[0] (hom A)
+  = (A : U[0]) (a : U[0]) (b : U[0]) (f : (a' : a) b) (fa : hom A a) (a' : A) f (fa a')
+
+-- Why doesn't this work? More testing needed.
+-- comp A a fa b f
 
