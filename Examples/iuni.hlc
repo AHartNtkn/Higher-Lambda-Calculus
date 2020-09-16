@@ -1,0 +1,80 @@
+module iuni where
+
+Id : (A : U[1]) (a : A) (b : A) U[1]
+   = (A : U[1]) (a : A) (b : A) (P : (a : A) U[1]) (pa : P a) P b
+
+refl : (A : U[1]) (a : A) Id A a a
+     = (A : U[1]) (a : A) (P : (a : A) U[1]) (pa : P a) pa
+
+sym : (A : U[1]) (a : A) (b : A) (p : Id A a b) Id A b a
+    = (A : U[1]) (a : A) (b : A) (p : Id A a b) p ((x : A) Id A x a) (refl A a)
+
+
+
+interval : U[1]
+  = (X : U[1]) (a : X) (b : X) (f : Id X a b) X
+
+left : interval
+  = (X : U[1]) (a : X) (b : X) (f : Id X a b) a
+
+right : interval
+  = (X : U[1]) (a : X) (b : X) (f : Id X a b) b
+
+left2Right : (l : left) right
+  = (l : left) (X : U[1]) (a : X) (b : X) (f : Id X a b)
+    f ((a : X) a) (l X a b f)
+
+right2Left : (l : right) left
+  = (r : right) (X : U[1]) (a : X) (b : X) (f : Id X a b)
+    sym X a b f ((a : X) a) (r X a b f)
+
+IUc : (A : U[0]) (B : U[0]) (p : Id U[0] A B) (i : interval) U[0]
+    = (A : U[0]) (B : U[0]) (p : Id U[0] A B) (i : interval) i U[0] A B p
+
+IU : U[1]
+   = (i : interval) U[0]
+
+f1 : (it : IU) U[0]
+   = (it : IU) it left
+
+f2 : (it : IU) U[0]
+   = (it : IU) it right
+
+del : (T : U[0]) IU
+    = (T : U[0]) (i : interval) T
+
+-- (x : A) (fa : F x) G x = (f : F) G = (f : (x : A) F x) (x : A) G x = (x : A) (f : (x : A) F x) G x
+
+lem : (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) (f : F) (x : A) F x
+    = (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) (f : F) f
+
+-- (f : F) G -> (f : F) (x : A) G x
+lem2 : (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) 
+       (al : (f : F) G) (f : F) (x : A) G x
+     = (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) (al : (f : F) G) (f : F) al f
+
+-- (f : F) G -> (x : A) (f : F) G x
+lem3 : (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) 
+       (al : (f : F) G) (x : A) (f : F) G x
+     = (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) 
+       (al : (f : F) G) (x : A) (f : F) lem2 A B F G al f x
+
+-- (x : A) (f : F x) G x -> (x : A) (f : F) G x
+lem4 : (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) 
+       (al : (x : A) (f : F x) G x) (x : A) (f : F) G x
+     = (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) 
+       (al : (x : A) (f : F x) G x) (x : A) (f : F) al x (f x)
+
+-- (x : A) (f : F x) G x -> (f : F) (x : A) G x
+lem5 : (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) 
+       (al : (x : A) (f : F x) G x) (f : F) (x : A) G x
+     = (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) 
+       (al : (x : A) (f : F x) G x) (f : F) (x : A) al x (f x)
+
+-- A weakened form of function extentionality.
+-- (x : A) (f : F x) G x -> (f : F) G
+funMor : (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) 
+         (al : (x : A) (f : F x) G x) (f : F) G
+       = (A : U[0]) (B : U[0]) (F : (a : A) B) (G : (a : A) B) 
+         (al : (x : A) (f : F x) G x) (f : F) (x : A) al x (f x)
+
